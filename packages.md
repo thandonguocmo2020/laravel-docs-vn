@@ -168,6 +168,54 @@ Bạn cũng có thể chọn để gộp cấu hình trong package của bạn v
             __DIR__.'/path/to/config/courier.php', 'courier'
         );
     }
+    
+    
+    ví dụ :
+    
+    Bạn có một file cấu hình cần thêm trong gói package/config/filesystems.php
+    nội dung :
+    
+      
+<?php
+
+return [
+       
+        'h3'=>
+                [
+                'driver' => 'local',
+                'root' => app_path('/'),
+                'visibility' => 'public',
+                 ]
+        ];
+
+    
+ Bạn cần ghi đè vào cấu hình mặc định hay thêm mới vào config/filesystems.php với key disk trong file :
+ 
+     'disks' => [
+
+        'local' => [
+            'driver' => 'local',
+            'root' => storage_path('app'),
+        ],
+
+
+
+    ],
+    
+    trong file Provider của package bạn cần thêm vào 
+
+ public function register()
+   {
+    $this->mergeConfigFrom(
+        __DIR__.'/path/to/package/config/filesystems.php',
+       'filesystems.disk'
+     );
+  }
+ 
+ 
+ // nó sẽ ko thêm trực tiếp mà thêm ngầm định.  Sau đó, bạn có thể kiểm tra nó với chức năng trợ giúp: 
+ dd( config ( 'filesystems.disk.h3'));
+
 
 <a name="public-assets"></a>
 ## Public Assets
