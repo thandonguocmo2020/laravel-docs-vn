@@ -155,6 +155,24 @@ Lúc này, khi người dùng package của bạn thực thi câu lệnh `vendor
 
 
 
+#### Cấu hình mặc định cho package
+
+Bạn cũng có thể chọn để gộp cấu hình trong package của bạn với cấu hình của ứng dụng. Điều này cho phép người dùng có thể thêm vào những option mà họ muốn ghi đè lên trong bản copy của file cấu hình được publish. Để gộp file cấu hình, sử dụng hàm `mergeConfigFrom` bên trong hàm `register` của service provider:
+
+    /**
+     * Register bindings in the container.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/path/to/config/courier.php', 'courier'
+        );
+    }
+
+
+
 #### Demo ghi thêm vào config/filesystems.php với key disk
 
 
@@ -225,21 +243,6 @@ Lúc này, khi người dùng package của bạn thực thi câu lệnh `vendor
               "s3" => array:5 [▶]
     ]
 
-#### Cấu hình mặc định cho package
-
-Bạn cũng có thể chọn để gộp cấu hình trong package của bạn với cấu hình của ứng dụng. Điều này cho phép người dùng có thể thêm vào những option mà họ muốn ghi đè lên trong bản copy của file cấu hình được publish. Để gộp file cấu hình, sử dụng hàm `mergeConfigFrom` bên trong hàm `register` của service provider:
-
-    /**
-     * Register bindings in the container.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->mergeConfigFrom(
-            __DIR__.'/path/to/config/courier.php', 'courier'
-        );
-    }
 
 <a name="public-assets"></a>
 ## Public Assets
