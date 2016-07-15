@@ -210,6 +210,20 @@ Lúc này, khi người dùng package của bạn thực thi câu lệnh `vendor
    để hiển thị kết quả trong Provider của bạn tại method boot hoặc route bất kỳ dùng 
    
        dd(config('filesystems.disks'));
+       
+       
+  kết quả 
+       
+     array:4 [▼
+              "h3" => array:3 [▼
+                "driver" => "local"
+                "root" => "D:\wamp64\www\laravel\app\/"
+                "visibility" => "public"
+              ]
+              "local" => array:2 [▶]
+              "public" => array:3 [▶]
+              "s3" => array:5 [▶]
+    ]
 
 #### Cấu hình mặc định cho package
 
