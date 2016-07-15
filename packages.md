@@ -187,10 +187,11 @@ return [
                 'visibility' => 'public',
                  ]
         ];
-
-    
+?>
+    ?>
  Bạn cần ghi đè vào cấu hình mặc định hay thêm mới vào config/filesystems.php với key disk trong file :
- 
+ <?php
+
      'disks' => [
 
         'local' => [
@@ -198,11 +199,13 @@ return [
             'root' => storage_path('app'),
         ],
 
-
-
     ],
     
-    trong file Provider của package bạn cần thêm vào 
+    ?>
+    
+    Trong file Provider của package bạn cần thêm vào 
+ 
+ <?php
 
  public function register()
    {
@@ -211,7 +214,7 @@ return [
        'filesystems.disk'
      );
   }
- 
+  ?>
  
  // nó sẽ ko thêm trực tiếp mà thêm ngầm định.  Sau đó, bạn có thể kiểm tra nó với chức năng trợ giúp: 
  dd( config ( 'filesystems.disk.h3'));
