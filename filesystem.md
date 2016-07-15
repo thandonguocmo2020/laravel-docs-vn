@@ -43,6 +43,13 @@ ví dụ :
 
 khi bạn thay thế disk mặc định là disk-3 thì thư mục gốc làm việc với file sẽ là thư mục app/
 
+Bạn có thể truy xuất tới một file thư mục trong disk cụ thể bằng cách sử dụng hàm disk trong Storage facade. 
+Dĩ nhiên là bạn vẫn có thể tiếp tục móc nối các hàm để thực thi trên disk:
+
+$disk = Storage::disk('s3');
+
+$contents = Storage::disk('disk-3')->get('file.jpg')
+
 <a name="the-public-disk"></a>
 #### The Public Disk
 
