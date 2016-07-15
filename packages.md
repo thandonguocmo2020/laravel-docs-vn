@@ -1,4 +1,28 @@
-<age như views, cấu hình, và các file localization.
+# Phát triển package
+
+- [Giới thiệu](#introduction)
+- [Service Providers](#service-providers)
+- [Routing](#routing)
+- [Resources](#resources)
+    - [Views](#views)
+    - [Translations](#translations)
+    - [Cấu hình](#configuration)
+- [Public Assets](#public-assets)
+- [Xuất File Groups](#publishing-file-groups)
+
+<a name="introduction"></a>
+## Giới thiệu
+
+Packages là cách chính thức để thêm chức năng vào trong Laravel. Package có thể là bất cứ thứ gì từ việc xử lý ngày giờ như [Carbon](https://github.com/briannesbitt/Carbon), hay nguyên bộ framework testing như [Behat](https://github.com/Behat/Behat).
+
+Dĩ nhiên là có nhiều loại package. Một số package thì stand-alone, nghĩa là chúng có thể hoạt động với bất kì framework nào, không chỉ là Laravel. Cả Carbon và Behat là ví dụ về stand-alone package.Bất cứ package nào có thể sử dụng với Laravel chỉ đơn giản là yêu cầu trong file `composer.json`.
+
+Mặt khác, một số package lại được tạo ra với mục đích sử dụng trong Laravel. Những package nào có route, controller, view và các cấu hình nhằm mục đích cải thiện ứng dụng Laravel. Hướng dẫn này phần lớn sẽ nói về việc phát triển các package dành cho Laravel.
+
+<a name="service-providers"></a>
+## Service Providers
+
+[Service providers](/docs/{{version}}/providers) là điểm két nối giữa package của bạn và Laravel. Một service provider chịu trách nhiệm kết nối các thành phần vào trong [container](/docs/{{version}}/container) của Laravel và thông báo cho Laravel vị trí để load các tài nguyên của package như views, cấu hình, và các file localization.
 
 Một service provider kế thừa từ class `Illuminate\Support\ServiceProvider` và chứa hai phương thức chính là `register` và `boot`. Class cơ sở `ServiceProvider` nằm trong Composer package là `illuminate/support` mà bạn cần phải thêm vào trong dependencies trong package của bạn.
 
@@ -129,44 +153,12 @@ Lúc này, khi người dùng package của bạn thực thi câu lệnh `vendor
 
     $value = config('courier.option');
 
-#### Cấu hình mặc định cho package
 
-Bạn cũng có thể chọn để gộp cấu hình trong package của bạn với cấu hình của ứng dụng. Điều này cho phép người dùng có thể thêm vào những option mà họ muốn ghi đè lên trong bản copy của file cấu hình được publish. Để gộp file cấu hình, sử dụng hàm `mergeConfigFrom` bên trong hàm `register` của service provider:
 
-    /**
-     * Register bindings in the container.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->mergeConfigFrom(
-            __DIR__.'/path/to/config/courier.php', 'courier'
-        );
-    }
-    
-    
-    ví dụ :
-    
-    Bạn có một file cấu hình cần thêm trong gói package/config/filesystems.php
-    nội dung :
-    
-    
+#### Demo ghi thêm vào config/filesystems.php với key disk
 
-return [
-       
-            'h3'=>
-                    [
-                    'driver' => 'local',
-                    'root' => app_path('/'),
-                    'visibility' => 'public',
-                     ]
-            ];
-            
-    
- Bạn cần ghi đè vào cấu hình mặc định hay thêm mới vào config/filesystems.php với key disk trong file :
 
-        'disks' => [
+  'disks' => [
 
         'local' => [
             'driver' => 'local',
@@ -187,32 +179,53 @@ return [
             'bucket' => 'your-bucket',
         ],
 
-/* nội dung thêm mới ẩn hiển thị ở đây */
 
     ],
 
-];
-    
-   
-     
-      Trong file Provider của package bạn cần thêm vào 
- 
 
+ Trong ServiceProvider của bạn đăng ký các key cần thêm mới 
 
  public function register()
-   {
-    $this->mergeConfigFrom(
-        __DIR__.'/path/to/package/config/filesystems.php',
-       'filesystems.disk'
-       /* filestyems == mặc định là mảng trong file  cần thêm */
-       /* disk là cấp độ key trong mảng */
-     );
-  }
- 
- 
- // nó sẽ ko thêm trực tiếp mà thêm ngầm định.  Sau đó, bạn có thể kiểm tra nó với chức năng trợ giúp: 
- dd( config ( 'filesystems.disk.h3'));
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/config/filesystems.php', 'filesystems.disks'
+        );
+    }
+    
+    
+    Trong file package/config/filesystems.php nội dung thêm mới như sau 
+    
+    return [
 
+        'h3'=>
+                [
+                'driver' => 'local',
+                'root' => app_path('/'),
+                'visibility' => 'public',
+                 ]
+        ];
+
+
+    
+   để hiển thị kết quả trong Provider của bạn tại method boot hoặc route bất kỳ dùng 
+   
+       dd(config('filesystems.disks'));
+
+#### Cấu hình mặc định cho package
+
+Bạn cũng có thể chọn để gộp cấu hình trong package của bạn với cấu hình của ứng dụng. Điều này cho phép người dùng có thể thêm vào những option mà họ muốn ghi đè lên trong bản copy của file cấu hình được publish. Để gộp file cấu hình, sử dụng hàm `mergeConfigFrom` bên trong hàm `register` của service provider:
+
+    /**
+     * Register bindings in the container.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/path/to/config/courier.php', 'courier'
+        );
+    }
 
 <a name="public-assets"></a>
 ## Public Assets
