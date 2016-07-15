@@ -21,7 +21,27 @@ Laravel cung cấp một lớp abstraction cho filesystem khá mạnh mẽ nhờ
 
 File cấu hình cho filesystem được đặt tại `config/filesystems.php`. Trong file này, bạn có thể cấu hình tất cả "disks" của bạn. Mỗi diesk tượng trưng cho một storage driver cụ thể và vị trí storage. Cấu hình ví dụ cho mỗi driver nằm trong file cấu hình. Vì thế, hãy thay đổi giá trị cấu hình sao cho hợp với ý của bạn.
 
+Mặc định disk là     'default' => 'local',
+
+Thư mục này nằm ở :
+
+'public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public'),
+            'visibility' => 'public',
+        ],
+
 Tất nhiên, bạn có thể cấu hình bao nhiêu disk tuỳ thích, và thậm chí có thể sử dụng nhiều disks mà cùng sử dụng chung driver.
+
+ví dụ :
+
+'disk-3' => [
+            'driver' => 'local',
+            'root' => app_path('/'),
+            'visibility' => 'public',
+        ],
+
+khi bạn thay thế disk mặc định là disk-3 thì thư mục gốc làm việc với file sẽ là thư mục app/
 
 <a name="the-public-disk"></a>
 #### The Public Disk
