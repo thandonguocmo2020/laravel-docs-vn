@@ -250,6 +250,8 @@ Như đã nhắc đến từ trước, để xác định tên của table để
 
 #### Defining The Inverse Of The Relationship
 
+Định nghĩa nghịch đảo của các mối quan hệ.
+
 Để truy ngược lại của quan hệ nhiều nhiều, bạn chỉ đơn giản đặt hàm `belongsToMany` trong model được liên quan. Tiếp tục với ví dụ về user và role, hãy định nghĩa phương thức `users` trong model `Role`:
 
     <?php
@@ -273,21 +275,34 @@ Bạn có thể thấy, quan hệ được định nghĩa giống hết như bê
 
 #### Lấy các cột của bảng trung gian
 
-Như chúng ta đã biết, khi làm việc với quan hệ nhiều nhiều, ta cần tới 1 bảng trung gian. Eloquent cung cấp nhiều cách rất hữu ích để tương tác với bảng này. Ví dụ hãy giả sử đối tượng `User` có nhiều đối tượng `Role` mà nó liên quan đến. Sau khi truy cập vào quan hệ này, chúng ta có thể muốn lấy thông tin bảng trung gian bằng cách sử dụng thuộc tính `pivot` trên model:
+Lấy giá trị của các bảng trung gian =>
+
+Như chúng ta đã biết, khi làm việc với quan hệ nhiều nhiều, ta cần tới 1 bảng trung gian.
+
+
+Eloquent cung cấp nhiều cách rất hữu ích để tương tác với bảng này. 
+
+Giả sử đối tượng `User` có nhiều đối tượng `Role` object liên quan. Sau khi truy cập vào quan hệ này, chúng ta có thể muốn lấy thông tin có trong bảng trung gian bằng cách sử dụng thuộc tính `pivot` trên model:
 
     $user = App\User::find(1);
 
     foreach ($user->roles as $role) {
         echo $role->pivot->created_at;
     }
+    
+created_at là một thuộc tính có trong bảng trung gian.
 
-Chú ý rằng mỗi model `Role` chúng ta lấy ra sẽ được tự động gán cho một thuộc tính `pivot`. Thuộc tính này bao gồm 1 model đại diện cho bảng trung gian, và có thể được sử dụng dung như bất kì model Eloquent nào.
+Chú ý rằng mỗi model object  `Role` khi lấy ra sẽ được gán một thuộc tính `pivot`.
 
-Mặc định, chỉ có các khóa của model tồn tại trong đối tượng `pivot`. Nếu bảng pivot của bạn có nhiều thuộc tính hơn, bạn phải chỉ định chúng khi định nghĩa quan hệ:
+đối tượng thuộc tính này sẽ đại diện bảng trung gian như  role_user.
+
+nó có thể được sử dụng dung như bất kì model Eloquent nào để truy cập thuộc tính có trong bảng.
+
+Mặc định, chỉ có các khóa chính của model tồn tại trong đối tượng `pivot`. Nếu bạn muốn truy cập trung gian qua thuộc tính pivot của bảng bạn cần có nhiều thuộc tính hơn, bạn phải chỉ định chúng khi định nghĩa quan hệ:
 
     return $this->belongsToMany('App\Role')->withPivot('column1', 'column2');
 
-Nếu bạn muốn bảng pivot này cũng có các automatically maintained `created-at` và `updated_at` timestamps (đây là 2 trường lưu lại thời gian khi thực hiện query trên 1 field), sử dụng phương thức `withTimestamps` khi định nghĩa quan hệ.
+Nếu bạn muốn bảng pivot này cũng có các tự động duy trì `created-at` và `updated_at` timestamps (đây là 2 trường lưu lại thời gian khi thực hiện query trên 1 field), sử dụng phương thức `withTimestamps` khi định nghĩa quan hệ.
 
     return $this->belongsToMany('App\Role')->withTimestamps();
 
@@ -300,6 +315,7 @@ Bạn cũng có thể lọc các kết quả trả về bởi `belongsToMany` b�
     return $this->belongsToMany('App\Role')->wherePivotIn('approved', [1, 2]);
 
 <a name="has-many-through"></a>
+
 ### Has Many Through
 
 (*lời người dịch, mình ko biết dịch cái này sang tiếng Việt sẽ như nào nữa, đơn giản là có nhiều thông qua :v)
