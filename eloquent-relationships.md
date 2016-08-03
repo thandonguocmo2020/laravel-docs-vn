@@ -2,10 +2,10 @@
 
 - [Giới thiệu](#introduction)
 - [Định nghĩa các quan hệ](#defining-relationships)
-    - [Một - Một](#one-to-one)
-    - [Một - Nhiều](#one-to-many)
-    - [Nhiều - Nhiều](#many-to-many)
-    - [Has Many Through](#has-many-through)
+    - [Một - Một](#one-to-one) `Một thể loại duy nhất 1 sản phẩm - Một sản phẩm thuộc về một thể loại`
+    - [Một - Nhiều](#one-to-many) `Một thể loại có nhiều sản phẩm - Nhiều sản phẩm thuộc về một thể loại`
+    - [Nhiều - Nhiều](#many-to-many) ` Một thể loại có nhiều sản phẩm - Một sản phẩm thuộc về nhiều thể loại`
+    - [Has Many Through](#has-many-through) `Mối quan hệ lấy dữ liệu thông qua một bảng liên quan `
     - [Quan hệ đa hình](#polymorphic-relations)
     - [Quan hệ đa hình nhiều nhiều](#many-to-many-polymorphic-relations)
 - [Truy vấn quan hệ](#querying-relations)
