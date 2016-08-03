@@ -280,9 +280,9 @@ Lấy giá trị của các bảng trung gian =>
 Như chúng ta đã biết, khi làm việc với quan hệ nhiều nhiều, ta cần tới 1 bảng trung gian.
 
 
-Eloquent cung cấp nhiều cách rất hữu ích để tương tác với bảng này. 
+Model Eloquent cung cấp một số cách rất hữu ích để tương tác với bảng này. 
 
-Giả sử đối tượng `User` có nhiều đối tượng `Role` object liên quan. Sau khi truy cập vào quan hệ này, chúng ta có thể muốn lấy thông tin có trong bảng trung gian bằng cách sử dụng thuộc tính `pivot` trên model:
+Giả sử đối tượng `User` có nhiều đối tượng `Role` object liên quan. Sau khi truy cập mối quan hệ chúng ta có thể truy cập thông tin trong bảng trung gian bằng cách sử dụng thuộc tính `pivot` trên model:
 
     $user = App\User::find(1);
 
@@ -292,13 +292,13 @@ Giả sử đối tượng `User` có nhiều đối tượng `Role` object liê
     
 created_at là một thuộc tính có trong bảng trung gian.
 
-Chú ý rằng mỗi model object  `Role` khi lấy ra sẽ được gán một thuộc tính `pivot`.
+Chú ý rằng mỗi model object  `Role` khi lấy ra bằng mối quan hệ sẽ được gán một thuộc tính `pivot`.
 
-đối tượng thuộc tính này sẽ đại diện bảng trung gian như  role_user.
+đối tượng thuộc tính này sẽ đại diện model trung gian như  role_user.
 
-nó có thể được sử dụng dung như bất kì model Eloquent nào để truy cập thuộc tính có trong bảng.
+nó có thể được sử dụng dung như bất kì model Eloquent nào để truy cập thuộc tính có trong model và sử dụng query hùng biện như bất kỳ model khác.
 
-Mặc định, chỉ có các khóa chính của model tồn tại trong đối tượng `pivot`. Nếu bạn muốn truy cập trung gian qua thuộc tính pivot của bảng bạn cần có nhiều thuộc tính hơn, bạn phải chỉ định chúng khi định nghĩa quan hệ:
+Mặc định, chỉ có các khóa chính của model tồn tại trong đối tượng `pivot`. Nếu bạn muốn truy cập trung gian vào các thuộc tính pivot của bảng bạn cần có nhiều thuộc tính sử dụng hơn, bạn phải chỉ định chúng khi định nghĩa quan hệ để các cột tự động được tạo và sử dụng :
 
     return $this->belongsToMany('App\Role')->withPivot('column1', 'column2');
 
@@ -308,7 +308,7 @@ Nếu bạn muốn bảng pivot này cũng có các tự động duy trì `creat
 
 #### Lọc quan hệ thông qua các cột của bảng trung gian
 
-Bạn cũng có thể lọc các kết quả trả về bởi `belongsToMany` bằng cách sử dụng phương thức `wherePivot` và `wherePivotIn`:
+Bạn cũng có thể lọc các kết quả trả về cột phù hợp các giá trị từ bảng trung gian bởi `belongsToMany` bằng cách sử dụng phương thức `wherePivot` và `wherePivotIn`:
 
     return $this->belongsToMany('App\Role')->wherePivot('approved', 1);
 
@@ -318,8 +318,11 @@ Bạn cũng có thể lọc các kết quả trả về bởi `belongsToMany` b�
 
 ### Has Many Through
 
-(*lời người dịch, mình ko biết dịch cái này sang tiếng Việt sẽ như nào nữa, đơn giản là có nhiều thông qua :v)
-Quan hệ "has-many-through" cung cấp cho ta một "đường tăt" tiện lợi cho việc truy cập những sự quan hệ "xa" thông qua một quan hệ trung gian. Ví dụ model `Country` có thể có nhiều model `Post` thông qua model `User`. Trong ví dụ này, bạn có thể dễ dàng nhóm tất cả các bài viết blog cho một country đã cho. Hãy nhìn vào các bảng cần thiết để định nghĩa mối quan hệ này:
+Lấy nhiều dữ liệu thông qua bảng trung gian.Quan hệ has many though cung cấp một đường tắt để truy cập dữ liệu từ xa thông qua một mối quan hệ trung gian.
+
+ Ví dụ : Model `Country` Từ bảng quốc gia có thể lấy ra nhiều dữ liệu bài viết có trong "model `Post`" thông qua mối quan hệ của Model `Post` với  model `User`. 
+ 
+ Hãy nhìn vào các bảng cần thiết để định nghĩa mối quan hệ này:
 
     countries
         id - integer
@@ -335,7 +338,11 @@ Quan hệ "has-many-through" cung cấp cho ta một "đường tăt" tiện l�
         user_id - integer
         title - string
 
-Bạn có thể thấy `posts` không có cột `country_id`, sự quan hệ `hasManyThrough` cung cấp cho chúng ta tuy cập tới các country's post qua `$country-posts`. Để thực hiện truy vấn này, Eloquent xem xét `country_id` trên bảng trung gian `users`. Sau khi tìm thấy các user ID phù hợp, chúng sẽ được dùng để truy vấn bảng `posts`.
+Bạn có thể thấy `posts` không có cột `country_id`, nhưng method quan hệ `hasManyThrough` cung cấp cho chúng ta tuy cập tới các bài viết  qua `$country-posts`. 
+
+Để thực hiện truy vấn này, Eloquent xem xét `country_id` trên bảng trung gian `users`.
+
+Sau khi tìm thấy các user ID phù hợp, chúng sẽ được dùng để truy vấn bảng `posts`.
 
 Chúng ta đã vừa xem qua cấu trúc bảng cho mối quan hệ này, bây giờ sẽ định nghĩa nó trong model `Country`:
 
@@ -356,9 +363,14 @@ Chúng ta đã vừa xem qua cấu trúc bảng cho mối quan hệ này, bây g
         }
     }
 
-Tham số đầu tiên truyền vào phương thức `hasManyThrough` là tên của model cuối nơi mà chúng ta muốn lấy data, còn tham số thứ 2 là tên của model trung gian. (*Không biết có trung gian qua nhiều table dc không nhỉ :v).
 
-Thông thường các khóa ngoại Eloquent sẽ được sử dụng để thực hiện các truy vấn quan hệ. Nếu bạn muốn tùy chỉnh tên các khóa, bạn phải truyền chúng vào như là tham số thứ 3 và thứ 4 cho phương thức `hasManyThrough`. Tham số thứ 3 là tên của khóa ngoại trên model trung gian, tham số thứ 4 là tên của khóa ngoại trên model cuối và tham số thứ 5 là local key (key của model).
+// Tham số 1 là dữ liệu bảng cần lấy
+
+// Tham số 2 là model trung gian
+
+Nếu bạn muốn tùy chỉnh khóa ngoại bận cần tham số 3 và 4 
+
+ Tham số thứ 3 là tên của khóa ngoại trên model trung gian, tham số thứ 4 là tên của khóa ngoại trên model cuối và tham số thứ 5 là local key (key của model).
 
     class Country extends Model
     {
@@ -372,13 +384,17 @@ Thông thường các khóa ngoại Eloquent sẽ được sử dụng để th�
     }
 
 <a name="polymorphic-relations"></a>
+
 ### Quan hệ đa hình
 
 #### Cấu trúc bảng
 
-Quan hệ đa hình cho phép một model co thể thuộc về nhiều hơn 1 model khác với một sự liên kết đơn. Ví dụ, tưởng tượng người dùng của ứng dụng có thể "like" cả post và comment. Sử dụng mối quan hệ đa hình, bạn có thể sử dụng duy nhất một bảng `likes` cho cả 2 ngữ cảnh trên. Đầu tiên hãy xem qua về điều kiện cấu trúc bảng để tạo nên quan hệ này:
+Quan hệ đa hình cho phép một bảng có thể thuộc về nhiều hơn 1 bảng.  Ví dụ, tưởng tượng người dùng của ứng dụng có thể "like" cả product và comment. Sử dụng mối quan hệ đa hình, bạn có thể sử dụng duy nhất một bảng `likes` cho cả 2 ngữ cảnh trên. 
 
-    posts
+Thông qua mô hình này bạn có thể lấy ra các comment của 1 sản phẩm.
+Và like của một sản phẩm + like của một comment ngữ cảnh quan hệ đa bảng của like tạo nên quan hệ này:
+
+    product
         id - integer
         title - string
         body - text
@@ -393,7 +409,11 @@ Quan hệ đa hình cho phép một model co thể thuộc về nhiều hơn 1 m
         likeable_id - integer
         likeable_type - string
 
- Có hai cột quan trong cần ghi nhớ đó là `likeable_id` và `likeable_type` trên table `likes`. Cột `likeable_id` sẽ lưu giữ giá trị ID của post hoặc comment, trong khi đó cột `likeable_type` sẽ lưu giữ tên lớp của model sở hữu. Cột `likeablel_type` là cách mà ORM xác định "kiểu" của model sở hữu để trả về khi truy cập vào quan hệ `likeable`.
+ Có hai cột quan trong cần ghi nhớ đó là `likeable_id` và `likeable_type` trên table `likes`. 
+ 
+ Cột `likeable_id` sẽ lưu giữ giá trị ID của sản phẩm hoặc bình luận
+ Trong khi đó cột `likeable_type` sẽ lưu giữ tên class của model sở hữu ID  đó.
+ 
 
 #### Cấu trúc Model
 
@@ -408,7 +428,7 @@ Tiếp theo, hãy xem xét các định nghĩa cần thiết cho model để t�
     class Like extends Model
     {
         /**
-         * Get all of the owning likeable models.
+         * Lấy ra model sở hữu id like đó.
          */
         public function likeable()
         {
@@ -416,10 +436,10 @@ Tiếp theo, hãy xem xét các định nghĩa cần thiết cho model để t�
         }
     }
 
-    class Post extends Model
+    class Product extends Model
     {
         /**
-         * Get all of the post's likes.
+         * Nhận tất cả các id like thuộc về sản phẩm
          */
         public function likes()
         {
@@ -430,7 +450,7 @@ Tiếp theo, hãy xem xét các định nghĩa cần thiết cho model để t�
     class Comment extends Model
     {
         /**
-         * Get all of the comment's likes.
+         * Nhận tất cả các id like thuộc về bình luận
          */
         public function likes()
         {
@@ -438,13 +458,16 @@ Tiếp theo, hãy xem xét các định nghĩa cần thiết cho model để t�
         }
     }
 
+// tham số 1 là bảng dữ liệu cần lấy ở đây là dữ liệu từ bảng like
+// tham số 2 là tên function trả về tên của model thuộc về là product hoặc post
+
 #### Lấy thông tin từ quan hệ đa hình
 
-Một khi các các bảng dữ liệu và model được định nghĩa, bạn có thể truy cập vào quan hệ thông qua các model. Ví dụ để truy cập tất cả like của một post, chúng ta đơn giản chỉ cần sử dụng thuộc tính động `likes`:
+Một khi các các bảng dữ liệu và model được định nghĩa, bạn có thể truy cập vào quan hệ thông qua các model. Ví dụ để truy cập tất cả like của một sản phẩm, chúng ta đơn giản chỉ cần sử dụng thuộc tính động `likes`:
 
-    $post = App\Post::find(1);
+    $product = App\Product::find(1);
 
-    foreach ($post->likes as $like) {
+    foreach ($product->likes as $like) {
         //
     }
 
@@ -454,16 +477,20 @@ Bạn cũng có thể lấy chính chủ của một quan hệ đa hình từ mo
 
     $likeable = $like->likeable;
 
-Quan hệ `likeable` trên model `Like` sẽ trả về 1 instance hoặc là `Post` hoặc `Comment`, dựa trên kiểu của model sở hữu like.
+function quan hệ `likeable` trên model `Like` sẽ trả về 1 thể hiện hoặc là `Product` hoặc `Comment`, dựa trên kiểu của model sở hữu like.
 
 #### Tùy chỉnh các kiểu đa hình
 
-Mặc định, Laravel sẽ sử dụng tên lớp đầy đủ để lưu giữ kiểu của model được liên quan. Cho một thể hiện(instance), đã có ở ví dụ trên nơi mà một `Like` có thể thuộc về một `Post` hoặc một `Comment`, mặc định `likeable_type` sẽ hoặc là `App\Post` hoặc `App\Comment` tương ứng. Tuy nhiên, bạn có thể muốn tách database từ cấu trúc bên trong của ứng dụng của bạn. Trong trường hợp đó, bạn phải định nghĩa một quan hệ "morph map" để thông báo cho Eloquent sử dụng tên bảng liên quan với mỗi model thay vì sử dụng tên class đầy đủ:
+Mặc định, Laravel sẽ sử dụng tên Class đầy đủ để lưu giữ model được liên quan. Cho một thể hiện của class, đã có ở ví dụ trên nơi mà một `Like` có thể thuộc về một `Product` hoặc một `Comment`, mặc định `likeable_type` sẽ hoặc là `App\Product` hoặc `App\Comment` tương ứng. 
+
+Tuy nhiên, bạn có thể muốn tách database từ cấu trúc bên trong của ứng dụng của bạn. Trong trường hợp đó, bạn phải định nghĩa một quan hệ "morph map" để thông báo cho Eloquent sử dụng tên bảng liên quan với mỗi model thay vì sử dụng tên class đầy đủ:
+
+Bạn phải đăng kí `morphMap` trong hàm `boot` của `AppServiceProvider` hoặc tạo 1 service provider tách biệt nếu bạn muốn.
 
     use Illuminate\Database\Eloquent\Relations\Relation;
 
     Relation::morphMap([
-        App\Post::class,
+        App\Product::class,
         App\Comment::class,
     ]);
 
@@ -472,13 +499,15 @@ Hoặc bạn muốn chỉ đinh một chuỗi tùy chọn liên quan với mỗi
     use Illuminate\Database\Eloquent\Relations\Relation;
 
     Relation::morphMap([
-        'posts' => App\Post::class,
+        'posts' => App\Product::class,
         'likes' => App\Like::class,
     ]);
 
-Bạn phải đăng kí `morphMap` trong hàm `boot` của `AppServiceProvider` hoặc tạo 1 service provider tách biệt nếu bạn muốn.
+
 
 <a name="many-to-many-polymorphic-relations"></a>
+
+
 ### Quan hệ đa hình nhiều - nhiều
 
 #### Cấu trúc bảng
