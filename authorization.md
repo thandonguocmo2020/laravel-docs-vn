@@ -21,7 +21,7 @@ Ngoài việc cung cấp thư viện xác thực người dùng laravel còn cun
 
 
 <a name="defining-abilities"></a>
-Định nghĩa một quyền chức năng 
+`Định nghĩa một quyền chức năng `
 
 Cách đơn giản nhất để xác định xem người dùng có thể thực hiện một hành động được đưa ra là để xác định một quyền hạn của người user hiện tại sử dụng lớp `Illuminate\Auth\Access\Gate` để định nghĩa.
 
@@ -63,7 +63,7 @@ Bạn rõ ràng có thể thử kiểm tra quyền một người dùng không x
 Việc gọi function action luôn cung cấp cho bạn một $user biến là đối số thứ nhất. Bạn không cần phải sử dụng nó trong mã của bạn!  Nhưng hãy để nó ở đó vì bạn có thể cần sử dụng nó trong tuong lai. 
 
 <a name="base-abilities"></a>
-[Định nghĩa quyền cơ bản] 
+`Định nghĩa quyền cơ bản`
 
     Ngoài việc định nghĩa một chức năng ủy quyền trong phương pháp khép kín "function ($user, $post)" bạn có thể định nghĩa sử dụng một method để check quyền. 
 
@@ -71,11 +71,11 @@ Việc gọi function action luôn cung cấp cho bạn một $user biến là �
 
 $gate->define('update-post', 'Class@method');
 
-[Chặn kiểm tra ủy quyền]
+`Chặn kiểm tra ủy quyền`
 
 Đôi khi bạn muốn cung cấp tất cả các quyền với một người dùng cụ thể việc sử dụng các method `before` để xác định một hành động được cần làm trước khi một quyền hạn được gọi.
 
-isSupperAdmin sẽ cung cấp tất cả quyền cho user hiện tại.
+     isSupperAdmin sẽ cung cấp tất cả quyền cho user hiện tại.
 
     $gate->before(function ($user, $ability) {
         if ($user->isSuperAdmin()) {
@@ -97,7 +97,7 @@ Tuy nhiên, bạn không thể thay đổi kết quả của việc kiểm tra q
 
 ### Kiểm tra ủy quyền
 <a name="ckeckgatefacade"></a>
-[Sử dụng Gate Facade]
+`Sử dụng Gate Facade`
 
 Khi một quyền hạn đã được định nghĩa, chúng ta có thể kiểm tra quyền với user đó bằng nhiều cách khác nhau. Đầu tiên chúng ta có thể sử dụng một vài phương pháp  : `check`, `allows`, or `denies` phương pháp có trong Gate. 
 
@@ -144,7 +144,7 @@ Giải thích  Các phương pháp kiểm tra  `check`, `allows`, or `denies` c�
 Các `check` phương pháp là một bí danh của allowsphương pháp.
 
 
-[Kiểm tra quyền với một người sử dụng chưa đăng nhập]
+`Kiểm tra quyền với một người sử dụng chưa đăng nhập`
 
 
 Nếu bạn muốn sử dụng Gate mặt tiền để kiểm tra xem một người dùng khác với người dùng đã xác thực. việc kiểm tra người sử dụng
@@ -170,7 +170,7 @@ Nếu khả năng của bạn cần nhiều tranh luận, chỉ cần vượt qu
         }
 
 <a name="usergate"></a>
-[Sử dụng User Model]
+`Sử dụng User Model`
 
 
 Noài cách sử dụng Face Gate bạn cũng có thể sử dụng model User. Theo mặc định laravel model `App\User` sử dụng 
@@ -213,7 +213,7 @@ Of course, the can method is simply the inverse of the cannot method:
         }
 
 <a name="gatebalde"></a>
-[Sử dụng trong Blade Templates]
+`Sử dụng trong Blade Templates`
 
 Để thuận tiện laravel cung cấp một số method trong `Teamplate Blade` là `@can` để kiểm tra người dùng có quyền sử dụng 
 
@@ -233,7 +233,7 @@ Bạn cũng có thể sử dụng  `@can` và  `@else` :
             <!-- The Current User Can't Update The Post -->
         @endcan
 <a name="formrequest"></a>
-[Sử dụng trong Form Requests]
+`Sử dụng trong Form Requests`
 
 Bạn cũng cso thể sử dụng định nghĩa Gate quyền trong một `request's authorize` method. ví dụ :
 
@@ -256,7 +256,7 @@ Ngoài cách viết các abilities vào trong provider mặc định là AuthSer
 
 
 <a name="create-prolicies"></a>
-[Creating Policies]
+`Creating Policies`
 
 Kể từ khi các lý luận quyền hạn được đặt trong `AuthServiceProvider` nó có thể quá tải và trở lên cồng kềnh. Laravel cho phép bạn chia nhỏ nó ra bằng các class `Policies`.
 
@@ -268,8 +268,7 @@ Bạn có thể tạo ra nó bằng cách thủ công lệnh `artisan command` v
 php artisan make:policy PostPolicy
 
 
-
-[Đăng ký Policies - Registering Policies]
+`Đăng ký Policies - Registering Policies`
 
 Một khi lý luận quyền hạn đã tồn tại, chúng tôi cần phải đăng ký với Gate class.
 
@@ -311,7 +310,7 @@ Các AuthServiceProviderchứa một `policies` tài sản mà bản đồ mà c
 
 <a name="writing-plicies"></a>
 
-[Viết Policies]
+`Viết Policies`
 
 
 Một khi policies đã được đăng ký chúng ta có thể thêm các phương pháp ủy quyền của nó.
@@ -347,7 +346,7 @@ Ví dụ show, destroyhoặc addComment để ủy quyền tương ứng với  
 `Lưu ý : Tất cả policies được giải quyết qua Service Container. Có nghĩa bạn có thể tiêm bất kỳ phụ thuộc nào cần thiết vào trong Policies của bạn. Mà nó sẽ tự động được giải tiêm. ` 
  
 <a name="check-prolicies"></a>
-[Chặn tất cả kiểm tra quyền ]
+`Chặn tất cả kiểm tra quyền `
 
 Trong một số trường hợp chúng ta có thể chặn việc kiểm tra trong `Gate` bằng hàm `before`, Phương pháp này sẽ được chạy trước khi tất cả các kiểm tra ủy quyền khác:
 
