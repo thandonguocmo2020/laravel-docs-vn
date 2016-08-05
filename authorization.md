@@ -11,8 +11,8 @@
 -  [Creating Policies](#create-prolicies)
 -  [Register Policies](#register-prolicies)
 -  [Writing Policies](#writing-plicies)
--  [Checking Policies](#check-prolicies
-- [Controller Authorization]
+-  [Checking Policies](#check-prolicies)
+- [Controller Authorization](#controller-authorization)
 
 
 <a name="Introduction"></a>
