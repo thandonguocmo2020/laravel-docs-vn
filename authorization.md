@@ -9,6 +9,7 @@
 - [Kiểm tra trong Form Requests](#formrequest)
 - [Policies](#Policies)
 -  [Creating Policies](#create-prolicies)
+-  [Register Policies](#register-prolicies)
 -  [Writing Policies](#writing-plicies)
 -  [Checking Policies](#check-prolicies
 - [Controller Authorization]
@@ -265,10 +266,11 @@ Trước tiên hãy tạo một `PostPolicy` mà sẽ chứa các định nghĩa
 
 Bạn có thể tạo ra nó bằng cách thủ công lệnh `artisan command` và nó được đặt trong thư mục app/Policies.
 
-php artisan make:policy PostPolicy
+        php artisan make:policy PostPolicy
 
-
+<a name="register-prolicies"></a>
 `Đăng ký Policies - Registering Policies`
+
 
 Một khi lý luận quyền hạn đã tồn tại, chúng tôi cần phải đăng ký với Gate class.
 
