@@ -40,8 +40,8 @@ Mục lục này tương ứng với [mục lục trên trang chủ](https://lar
     * [Facades](facades.md)
 
 * **Services**
-    * Authentication
-    * Authorization
+    * [Authentication](authentication.md)
+    * [Authorization](authorization.md)
     * [Artisan Console](artisan.md)
     * Billing
     * [Cache](cache.md)
