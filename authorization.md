@@ -6,7 +6,7 @@
 - [Sử dụng  Gate Facade kiểm tra quyền](#ckeckgatefacade)
 - [Sử dụng User Model kiểm tra quyền](#usergate)
 - [Kiểm tra trong Blade Templates](#gateblade)
-- [Kiểm tra trong Form Requests]
+- [Kiểm tra trong Form Requests](#formrequest)
 - [Policies]
 -  [Creating Policies]
 -  [Writing Policies]
@@ -33,32 +33,27 @@ Ví dụ chúng ta có thể định nghĩa một khả năng sẽ xảy ra mà 
 update-post là một quyền dùng để kiểm tra xem user đó có được cho phép truy cập tài nguyên hay không.
 
 
-`` <?php
-
-namespace App\Providers;
-
-use Illuminate\Contracts\Auth\Access\Gate as GateContract;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-
-class AuthServiceProvider extends ServiceProvider
-{
-    /**
-     * Đăng ký bất kỳ ứng dụng xác thực ủy quyền dịch vụ
-     *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
-     * @return void
-     */
-    public function boot(GateContract $gate)
+    <?php
+    namespace App\Providers;
+    use Illuminate\Contracts\Auth\Access\Gate as GateContract;
+    use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+    class AuthServiceProvider extends ServiceProvider
     {
-        $this->registerPolicies($gate);
-
-        $gate->define('update-post', function ($user, $post) {
-            return $user->id == $post->user_id;
-        });
+        /**
+         * Đăng ký bất kỳ ứng dụng xác thực ủy quyền dịch vụ
+         *
+         * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
+         * @return void
+         */
+        public function boot(GateContract $gate)
+        {
+            $this->registerPolicies($gate);
+         $gate->define('update-post', function ($user, $post) {
+                return $user->id == $post->user_id;
+            });
+        }
     }
-}
-
-?>
+    
 
 Lưu ý chúng tôi không thể kiểm tra được người dùng user đó là không xác định.
 Các Gate sẽ tự động trả về false vì các khả năng khi người dùng không xác thực hoặc một người dùng được xác định. bằng sử dụng phương pháp [forUser](#forUser).
@@ -82,11 +77,11 @@ $gate->define('update-post', 'Class@method');
 
 isSupperAdmin sẽ cung cấp tất cả quyền cho user hiện tại.
 
-$gate->before(function ($user, $ability) {
-    if ($user->isSuperAdmin()) {
-        return true;
-    }
-});
+    $gate->before(function ($user, $ability) {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+    });
 
 Nếu beforegọi lại trả về một kết quả không null kết quả sẽ trả về từ việc kiểm tra. 
 
@@ -94,9 +89,9 @@ Bạn có thể sử dụng các afterphương pháp để xác định một ca
 
 Tuy nhiên, bạn không thể thay đổi kết quả của việc kiểm tra quyền từ một aftercuộc gọi lại:
 
-$gate->after(function ($user, $ability, $result, $arguments) {
-    //
-});
+    $gate->after(function ($user, $ability, $result, $arguments) {
+        //
+    });
 
 <a name="CheckingAbilities"></a>
 
@@ -112,36 +107,35 @@ Bạn không cần phải tìm kiếm người dùng hiện tại và truyền v
 
 Chúng ta cần một ví dụ sử dụng cho các phương pháp :   `check`, `allows`, or `denies` của Gate
 
-<?php
-
-namespace App\Http\Controllers;
-
-use Gate;
-use App\User;
-use App\Post;
-use App\Http\Controllers\Controller;
-
-class PostController extends Controller
-{
-    /**
-     * Update the given post.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function update($id)
-    {
-        $post = Post::findOrFail($id);
-
-        if (Gate::denies('update-post', $post)) {
-            abort(403);
+        <?php
+        
+        namespace App\Http\Controllers;
+        
+        use Gate;
+        use App\User;
+        use App\Post;
+        use App\Http\Controllers\Controller;
+        
+        class PostController extends Controller
+        {
+            /**
+             * Update the given post.
+             *
+             * @param  int  $id
+             * @return Response
+             */
+            public function update($id)
+            {
+                $post = Post::findOrFail($id);
+        
+                if (Gate::denies('update-post', $post)) {
+                    abort(403);
+                }
+        
+                // Update Post...
+            }
         }
-
-        // Update Post...
-    }
-}
-
-?>
+        ?>
 
 Giải thích  Các phương pháp kiểm tra  `check`, `allows`, or `denies` của Gate 
 
@@ -156,26 +150,25 @@ Các `check` phương pháp là một bí danh của allowsphương pháp.
 Nếu bạn muốn sử dụng Gate mặt tiền để kiểm tra xem một người dùng chưa xác định có những quyền hạn đó hay không bạn có thể sử dụng các `forUser` phương pháp:
 
 
-<?php 
-
-    if (Gate::forUser($user)->allows('update-post', $post)) {
-    //
-}
+     
+        
+            if (Gate::forUser($user)->allows('update-post', $post)) {
+            //
+       
 
 Đi qua nhiều đối số để kiểm tra quyền
 
 
-Gate::define('delete-comment', function ($user, $post, $comment) {
-    //
-});
-
-?>
+    Gate::define('delete-comment', function ($user, $post, $comment) {
+        //
+    });
+    
 
 Nếu khả năng của bạn cần nhiều tranh luận, chỉ cần vượt qua một mảng các đối số cho các Gatephương pháp
 
-if (Gate::allows('delete-comment', [$post, $comment])) {
-    //
-}
+        if (Gate::allows('delete-comment', [$post, $comment])) {
+            //
+        }
 
 <a name="usergate"></a>
 ### Sử dụng User Model
@@ -186,40 +179,40 @@ Noài cách sử dụng Face Gate bạn cũng có thể sử dụng model User. 
 
 Bạn có thể sử dụng nó như ví dụ :
 
-<?php
-
-namespace App\Http\Controllers;
-
-use App\Post;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
-class PostController extends Controller
-{
-    /**
-     * Update the given post.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        $post = Post::findOrFail($id);
-
-        if ($request->user()->cannot('update-post', $post)) {
-            abort(403);
-        }
-
-        // Update Post...
-    }
-}
+            <?php
+            
+            namespace App\Http\Controllers;
+            
+            use App\Post;
+            use Illuminate\Http\Request;
+            use App\Http\Controllers\Controller;
+            
+            class PostController extends Controller
+            {
+                /**
+                 * Update the given post.
+                 *
+                 * @param  \Illuminate\Http\Request  $request
+                 * @param  int  $id
+                 * @return Response
+                 */
+                public function update(Request $request, $id)
+                {
+                    $post = Post::findOrFail($id);
+            
+                    if ($request->user()->cannot('update-post', $post)) {
+                        abort(403);
+                    }
+            
+                    // Update Post...
+                }
+            }
 Of course, the can method is simply the inverse of the cannot method:
 
-<?= if ($request->user()->can('update-post', $post)) {
-    // Update Post...
-}
-?>
+         if ($request->user()->can('update-post', $post)) {
+            // Update Post...
+        }
+
 <a name="gatebalde"></a>
 ### Sử dụng trong Blade Templates
 
@@ -227,19 +220,19 @@ Of course, the can method is simply the inverse of the cannot method:
 
 dữ liệu trong đó hay không. 
 
-<a href="/post/{{ $post->id }}">View Post</a>
-
-@can('update-post', $post)
-    <a href="/post/{{ $post->id }}/edit">Edit Post</a>
-@endcan
+    <a href="/post/{{ $post->id }}">View Post</a>
+    
+    @can('update-post', $post)
+        <a href="/post/{{ $post->id }}/edit">Edit Post</a>
+    @endcan
 
 Bạn cũng có thể sử dụng  `@can` và  `@else` :
 
-@can('update-post', $post)
-    <!-- The Current User Can Update The Post -->
-@else
-    <!-- The Current User Can't Update The Post -->
-@endcan
+        @can('update-post', $post)
+            <!-- The Current User Can Update The Post -->
+        @else
+            <!-- The Current User Can't Update The Post -->
+        @endcan
 
 Sử dụng trong Form Requests
 
@@ -282,36 +275,36 @@ Các AuthServiceProviderchứa một `policies` tài sản mà bản đồ mà c
 
 Để đăng ký chính sách mới chỉ cần thêm PostPolicy class cho  protected $policies :
 
-<?php
-
-namespace App\Providers;
-
-use App\Post;
-use App\Policies\PostPolicy;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-
-class AuthServiceProvider extends ServiceProvider
-{
-    /**
-     * The policy mappings for the application.
-     *
-     * @var array
-     */
-    protected $policies = [
-        Post::class => PostPolicy::class,
-    ];
-
-    /**
-     * Register any application authentication / authorization services.
-     *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
-     * @return void
-     */
-    public function boot(GateContract $gate)
-    {
-        $this->registerPolicies($gate);
-    }
-}
+        <?php
+        
+        namespace App\Providers;
+        
+        use App\Post;
+        use App\Policies\PostPolicy;
+        use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+        
+        class AuthServiceProvider extends ServiceProvider
+        {
+            /**
+             * The policy mappings for the application.
+             *
+             * @var array
+             */
+            protected $policies = [
+                Post::class => PostPolicy::class,
+            ];
+        
+            /**
+             * Register any application authentication / authorization services.
+             *
+             * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
+             * @return void
+             */
+            public function boot(GateContract $gate)
+            {
+                $this->registerPolicies($gate);
+            }
+        }
 
 Viết Policies
 
@@ -320,28 +313,26 @@ Một khi policies đã được đăng ký chúng ta có thể thêm các phư�
 
 Trong ví dụ này chúng ta định nghĩa một `User` có quyền  "update" một Post hay không là một method của PostPolicy.
 
-
-<?php
-
-namespace App\Policies;
-
-use App\User;
-use App\Post;
-
-class PostPolicy
-{
-    /**
-     * Determine if the given post can be updated by the user.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Post  $post
-     * @return bool
-     */
-    public function update(User $user, Post $post)
-    {
-        return $user->id === $post->user_id;
-    }
-}
+        <?php
+        namespace App\Policies;
+        
+        use App\User;
+        use App\Post;
+        
+        class PostPolicy
+        {
+            /**
+             * Determine if the given post can be updated by the user.
+             *
+             * @param  \App\User  $user
+             * @param  \App\Post  $post
+             * @return bool
+             */
+            public function update(User $user, Post $post)
+            {
+                return $user->id === $post->user_id;
+            }
+        }
 
 Bạn có thể tiếp tục để xác định phương pháp bổ sung về chính sách khi cần thiết cho những quyền hạn khác nhau.
 
@@ -350,26 +341,26 @@ Ví dụ show, destroyhoặc addComment để ủy quyền tương ứng với  
 
 `Lưu ý : Tất cả policies được giải quyết qua Service Container. Có nghĩa bạn có thể tiêm bất kỳ phụ thuộc nào cần thiết vào trong Policies của bạn. Mà nó sẽ tự động được giải tiêm. ` 
  
-
-Chặn tất cả kiểm tra Checks
+<a name="chan-kiem-tra"></a>
+###Chặn tất cả kiểm tra Checks
 
 
 Trong một số trường hợp chúng ta có thể chặn việc kiểm tra trong `Gate` bằng hàm `before`, Phương pháp này sẽ được chạy trước khi tất cả các kiểm tra ủy quyền khác:
 
-public function before($user, $ability)
-{
-    if ($user->isSuperAdmin()) {
-        return true;
-    }
-}
+        public function before($user, $ability)
+        {
+            if ($user->isSuperAdmin()) {
+                return true;
+            }
+        }
 
 `isSuperAdmin()` là  một ví dụ method có trong user bạn cần định nghĩa nó. 
 
-public function isSuperAdmin()
-{
-    // tác vụ logic của bạn 
-    return true; // or false
-}
+        public function isSuperAdmin()
+        {
+            // tác vụ logic của bạn 
+            return true; // or false
+        }
 
 
 Nếu các beforephương thức trả về một kết quả không null mà kết quả sẽ được coi là kết quả của việc kiểm tra..
@@ -387,34 +378,35 @@ Sử dụng  Gate Facade
 
 demo :
 
-<?php
-
-namespace App\Http\Controllers;
-
-use Gate;
-use App\User;
-use App\Post;
-use App\Http\Controllers\Controller;
-
-class PostController extends Controller
-{
-    /**
-     * Update the given post.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function update($id)
-    {
-        $post = Post::findOrFail($id);
-
-        if (Gate::denies('update', $post)) {
-            abort(403);
+        <?php
+        
+        namespace App\Http\Controllers;
+        
+        use Gate;
+        use App\User;
+        use App\Post;
+        use App\Http\Controllers\Controller;
+        
+        class PostController extends Controller
+        {
+            /**
+             * Update the given post.
+             *
+             * @param  int  $id
+             * @return Response
+             */
+            public function update($id)
+            {
+                $post = Post::findOrFail($id);
+        
+                if (Gate::denies('update', $post)) {
+                    abort(403);
+                }
+        
+                // Update Post...
+            }
         }
-
-        // Update Post...
-    }
-}
+        
 sử dụng User Model
 
 Các Usermô hình của can và cannot phương pháp này cũng sẽ tự động sử dụng policies khi nào object đối số truyền vào.
@@ -436,9 +428,9 @@ Sử dụng Blade Templates
 
 Tương tự như vậy @can sẽ sử dụng các đối số object class truyền vào để kiểm tra quyền:
 
-@can('update', $post)
-    <!-- The Current User Can Update The Post -->
-@endcan
+    @can('update', $post)
+        <!-- The Current User Can Update The Post -->
+    @endcan
 
 Sử dụng Policy Helper
 
@@ -446,9 +438,9 @@ Các chức năng `policy global helper` có thể được sử dụng để l�
 
  Ví dụ, chúng ta có thể vượt qua một `Post` ví dụ để các `policy helper` để có được một thể hiện của chúng tôi tương ứng `PostPolicy class`
 
-if (policy($post)->update($user, $post)) {
-    //
-}
+        if (policy($post)->update($user, $post)) {
+            //
+        }
 
 Controller Authorization
 
@@ -457,30 +449,30 @@ Theo mặc định, Laravel App\Http\Controllers\Controller class controller cơ
 
 vì vậy hãy sử dụng authorize cho phép request kiểm tra ủy quyền update post.
 
-<?php
-
-namespace App\Http\Controllers;
-
-use App\Post;
-use App\Http\Controllers\Controller;
-
-class PostController extends Controller
-{
-    /**
-     * Update the given post.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function update($id)
-    {
-        $post = Post::findOrFail($id);
-
-        $this->authorize('update', $post);
-
-        // Update Post...
-    }
-}
+        <?php
+        
+        namespace App\Http\Controllers;
+        
+        use App\Post;
+        use App\Http\Controllers\Controller;
+        
+        class PostController extends Controller
+        {
+            /**
+             * Update the given post.
+             *
+             * @param  int  $id
+             * @return Response
+             */
+            public function update($id)
+            {
+                $post = Post::findOrFail($id);
+        
+                $this->authorize('update', $post);
+        
+                // Update Post...
+            }
+        }
 
 Nếu các hành động được ủy quyền, bộ điều khiển sẽ tiếp tục thực hiện bình thường.
 
