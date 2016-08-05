@@ -1,7 +1,7 @@
 ### Authorization - Uỷ quyền cho phép truy cập dữ liệu
 
 - [Giới thiệu](#Introduction)
-- [Định nghĩa quyền]
+- [Định nghĩa quyền](#Defining Abilities)
 - [Kiểm tra quyền]
 - [Sử dụng  Gate Facade kiểm tra quyền]
 - [Sử dụng User Model kiểm tra quyền]
