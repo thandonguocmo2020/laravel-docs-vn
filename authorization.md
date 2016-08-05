@@ -1,17 +1,17 @@
 Authorization - Uỷ quyền cho phép truy cập dữ liệu
 
-Giới thiệu
-Định nghĩa quyền
-Kiểm tra quyền
-Sử dụng  Gate Facade kiểm tra quyền
-Sử dụng User Model kiểm tra quyền
-Kiểm tra trong Blade Templates
-Kiểm tra trong Form Requests
-Policies
-Creating Policies
-Writing Policies
-Checking Policies
-Controller Authorization
+[Giới thiệu](#Introduction)
+[Định nghĩa quyền]
+[Kiểm tra quyền]
+[Sử dụng  Gate Facade kiểm tra quyền]
+[Sử dụng User Model kiểm tra quyền]
+[Kiểm tra trong Blade Templates]
+[Kiểm tra trong Form Requests]
+[Policies]
+[Creating Policies]
+[Writing Policies]
+[Checking Policies]
+[Controller Authorization]
 
 [Giới thiệu](#Introduction)
 
@@ -19,7 +19,7 @@ Ngoài việc cung cấp thư viện xác thực người dùng laravel còn cun
 
 
 
-Định nghĩa một quyền chức năng
+Định nghĩa một quyền chức năng ### Defining Abilities
 
 Cách đơn giản nhất để xác định xem người dùng có thể thực hiện một hành động được đưa ra là để xác định một quyền hạn của người user hiện tại sử dụng lớp `Illuminate\Auth\Access\Gate` để định nghĩa.
 
