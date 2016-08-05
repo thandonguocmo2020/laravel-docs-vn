@@ -1,19 +1,21 @@
-Authorization - Uỷ quyền cho phép truy cập dữ liệu
+### Authorization - Uỷ quyền cho phép truy cập dữ liệu
 
-[Giới thiệu](#Introduction)
-[Định nghĩa quyền]
-[Kiểm tra quyền]
-[Sử dụng  Gate Facade kiểm tra quyền]
-[Sử dụng User Model kiểm tra quyền]
-[Kiểm tra trong Blade Templates]
-[Kiểm tra trong Form Requests]
-[Policies]
-[Creating Policies]
-[Writing Policies]
-[Checking Policies]
-[Controller Authorization]
+- [Giới thiệu](#Introduction)
+- [Định nghĩa quyền]
+- [Kiểm tra quyền]
+- [Sử dụng  Gate Facade kiểm tra quyền]
+- [Sử dụng User Model kiểm tra quyền]
+- [Kiểm tra trong Blade Templates]
+- [Kiểm tra trong Form Requests]
+- [Policies]
+-  [Creating Policies]
+-  [Writing Policies]
+- [Checking Policies]
+- [Controller Authorization]
 
-[Giới thiệu](#Introduction)
+### Introduction
+
+Giới thiệu
 
 Ngoài việc cung cấp thư viện xác thực người dùng laravel còn cung cấp dịch vụ để tổ chức ủy quyền để cho phép và không cho phép người dùng truy cập vào nguồn dữ liệu. Việc kiểm soát truy cập có nhiều phương pháp để hỗ trợ bạn trong việc ủy quyền chúng tôi sẽ giới thiệu bạn trong tài liệu này.
 
