@@ -1,11 +1,11 @@
 ### Authorization - Uỷ quyền cho phép truy cập dữ liệu
 
 - [Giới thiệu](#Introduction)
-- [Định nghĩa quyền](#Defining Abilities)
-- [Kiểm tra quyền]
-- [Sử dụng  Gate Facade kiểm tra quyền]
-- [Sử dụng User Model kiểm tra quyền]
-- [Kiểm tra trong Blade Templates]
+- [Định nghĩa quyền](#defining-abilities)
+- [Kiểm tra quyền](#CheckingAbilities)
+- [Sử dụng  Gate Facade kiểm tra quyền](#ckeckgatefacade)
+- [Sử dụng User Model kiểm tra quyền](#usergate)
+- [Kiểm tra trong Blade Templates](#gateblade)
 - [Kiểm tra trong Form Requests]
 - [Policies]
 -  [Creating Policies]
@@ -13,15 +13,15 @@
 - [Checking Policies]
 - [Controller Authorization]
 
-### Introduction
 
-Giới thiệu
+<a name="Introduction"></a>
+### Giới thiệu
 
 Ngoài việc cung cấp thư viện xác thực người dùng laravel còn cung cấp dịch vụ để tổ chức ủy quyền để cho phép và không cho phép người dùng truy cập vào nguồn dữ liệu. Việc kiểm soát truy cập có nhiều phương pháp để hỗ trợ bạn trong việc ủy quyền chúng tôi sẽ giới thiệu bạn trong tài liệu này.
 
 
-
-Định nghĩa một quyền chức năng ### Defining Abilities
+<a name="defining-abilities"></a>
+Định nghĩa một quyền chức năng 
 
 Cách đơn giản nhất để xác định xem người dùng có thể thực hiện một hành động được đưa ra là để xác định một quyền hạn của người user hiện tại sử dụng lớp `Illuminate\Auth\Access\Gate` để định nghĩa.
 
@@ -33,7 +33,7 @@ Ví dụ chúng ta có thể định nghĩa một khả năng sẽ xảy ra mà 
 update-post là một quyền dùng để kiểm tra xem user đó có được cho phép truy cập tài nguyên hay không.
 
 
-<?php
+`` <?php
 
 namespace App\Providers;
 
@@ -58,6 +58,7 @@ class AuthServiceProvider extends ServiceProvider
     }
 }
 
+?>
 
 Lưu ý chúng tôi không thể kiểm tra được người dùng user đó là không xác định.
 Các Gate sẽ tự động trả về false vì các khả năng khi người dùng không xác thực hoặc một người dùng được xác định. bằng sử dụng phương pháp [forUser](#forUser).
@@ -66,7 +67,7 @@ Bạn rõ ràng có thể thử kiểm tra quyền một người dùng không x
 
 Việc gọi function action luôn cung cấp cho bạn một $user biến là đối số thứ nhất. Bạn không cần phải sử dụng nó trong mã của bạn!  Nhưng hãy để nó ở đó vì bạn có thể cần sử dụng nó trong tuong lai. 
 
-
+<a name="base-abilities"></a>
 [Định nghĩa quyền cơ bản] (#Class Based Abilities)
 
     Ngoài việc định nghĩa một chức năng ủy quyền trong phương pháp khép kín "function ($user, $post)" bạn có thể định nghĩa sử dụng một method để check quyền. 
@@ -97,10 +98,11 @@ $gate->after(function ($user, $ability, $result, $arguments) {
     //
 });
 
-[Kiểm tra ủy quyền](#Checking Abilities)
+<a name="CheckingAbilities"></a>
 
-
-Sử dụng Gate Facade
+### Kiểm tra ủy quyền
+<a name="ckeckgatefacade"></a>
+### Sử dụng Gate Facade
 
 Khi một quyền hạn đã được định nghĩa, chúng ta có thể kiểm tra quyền với user đó bằng nhiều cách khác nhau. Đầu tiên chúng ta có thể sử dụng một vài phương pháp  : `check`, `allows`, or `denies` phương pháp có trong Gate. 
 
@@ -139,6 +141,8 @@ class PostController extends Controller
     }
 }
 
+?>
+
 Giải thích  Các phương pháp kiểm tra  `check`, `allows`, or `denies` của Gate 
 
 `allows` phương pháp đơn giản là nghịch đảo của các deniesphương pháp và trả về true nếu  method action được ủy quyền.
@@ -146,14 +150,15 @@ Giải thích  Các phương pháp kiểm tra  `check`, `allows`, or `denies` c�
 Các `check` phương pháp là một bí danh của allowsphương pháp.
 
 
-
-Kiểm tra quyền với một người sử dụng cụ thể ### forUser
+### Kiểm tra quyền với một người sử dụng cụ thể 
 
 
 Nếu bạn muốn sử dụng Gate mặt tiền để kiểm tra xem một người dùng chưa xác định có những quyền hạn đó hay không bạn có thể sử dụng các `forUser` phương pháp:
 
 
-if (Gate::forUser($user)->allows('update-post', $post)) {
+<?php 
+
+    if (Gate::forUser($user)->allows('update-post', $post)) {
     //
 }
 
@@ -164,13 +169,16 @@ Gate::define('delete-comment', function ($user, $post, $comment) {
     //
 });
 
+?>
+
 Nếu khả năng của bạn cần nhiều tranh luận, chỉ cần vượt qua một mảng các đối số cho các Gatephương pháp
 
 if (Gate::allows('delete-comment', [$post, $comment])) {
     //
 }
 
-Sử dụng User Model
+<a name="usergate"></a>
+### Sử dụng User Model
 
 
 Noài cách sử dụng Face Gate bạn cũng có thể sử dụng model User. Theo mặc định laravel model `App\User` sử dụng 
@@ -208,11 +216,12 @@ class PostController extends Controller
 }
 Of course, the can method is simply the inverse of the cannot method:
 
-if ($request->user()->can('update-post', $post)) {
+<?= if ($request->user()->can('update-post', $post)) {
     // Update Post...
 }
-
-Sử dụng trong Blade Templates
+?>
+<a name="gatebalde"></a>
+### Sử dụng trong Blade Templates
 
 Để thuận tiện laravel cung cấp một số method trong `Teamplate Blade` là `@can` để kiểm tra người dùng có quyền sử dụng 
 
