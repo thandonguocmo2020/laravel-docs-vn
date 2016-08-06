@@ -290,7 +290,7 @@ Giả sử đối tượng `User` có nhiều đối tượng `Role` object liê
         echo $role->pivot->created_at;
     }
     
-created_at là một thuộc tính có trong bảng trung gian.
+created_at là một thuộc tính bắt buộc cố cột đó  trong bảng trung gian.
 
 Chú ý rằng mỗi model object  `Role` khi lấy ra bằng mối quan hệ sẽ được gán một thuộc tính `pivot`.
 
@@ -298,7 +298,8 @@ Chú ý rằng mỗi model object  `Role` khi lấy ra bằng mối quan hệ s�
 
 nó có thể được sử dụng dung như bất kì model Eloquent nào để truy cập thuộc tính có trong model và sử dụng query hùng biện như bất kỳ model khác.
 
-Mặc định, chỉ có các khóa chính của model tồn tại trong đối tượng `pivot`. Nếu bạn muốn truy cập trung gian vào các thuộc tính pivot của bảng bạn cần có nhiều thuộc tính sử dụng hơn, bạn phải chỉ định chúng khi định nghĩa quan hệ để các cột tự động được tạo và sử dụng :
+Mặc định, chỉ có các khóa chính của các model liên quan tồn tại trong đối tượng `pivot`.  ví dụ user_id và role_id
+Nếu bạn muốn truy cập vào các cột có trong bảng trung gian. Ban cần thêm vào các thuộc tính pivot của bảng bạn. Nếu cần có nhiều thuộc tính sử dụng hơn bạn phải chỉ định chúng khi định nghĩa quan hệ để các cột tự động được lấy ra sử dụng :
 
     return $this->belongsToMany('App\Role')->withPivot('column1', 'column2');
 
