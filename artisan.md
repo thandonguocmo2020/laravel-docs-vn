@@ -131,9 +131,9 @@ Tuỳ chọn, như đối số, cũng là một kiểu nhập vào từ người
      *
      * @var string
      */
-    protected $signature = 'email:send {user} {--queue}';
+    protected $signature = 'email:send {user} {--name}';
 
-Ở ví dụ này, tuỳ chọn `--queue` có thể được chỉ định khi thực hiện gọi câu lệnh. Nếu như `--queue` được gọi, thì giá trị của tuỳ chọn này sẽ là `true`. Ngược lại, giá trị sẽ là `false`:
+Ở ví dụ này, tuỳ chọn `--name` có thể được chỉ định khi thực hiện gọi câu lệnh. Nếu như `--name` được gọi, thì giá trị của tuỳ chọn này sẽ là `true`. Ngược lại, giá trị sẽ là `false`:
 
     php artisan email:send 1 --queue
 
@@ -144,15 +144,15 @@ Bạn cũng có thể điều chỉnh sao cho tuỳ chọn phải được gán 
      *
      * @var string
      */
-    protected $signature = 'email:send {user} {--queue=}';
+    protected $signature = 'email:send {user} {--name=}';
 
 Trong ví dụ này, người sử dụng có thể truyền vào một giá trị cho tuỳ chọn:
 
-    php artisan email:send 1 --queue=default
+    php artisan email:send 1 --name=default
 
 Bạn cũng có thể gán giá trị mặc định cho tuỳ chọn:
 
-    email:send {user} {--queue=default}
+    email:send {user} {--name=default}
 
 Để thiết lập một shortcut khi khai báo tuỳ chọn, bạn có thể thêm vào tên của shortcut ngay trước tên của tuỳ chọn và dùng dấu | để ngăn cách:
 
@@ -175,12 +175,20 @@ Bạn có thể gán nội dung mô tả cho các đối số và tuỳ chọn b
      */
     protected $signature = 'email:send
                             {user : The ID of the user}
-                            {--queue= : Whether the job should be queued}';
+                            {--name= : Whether the job should be queued}';
 
 <a name="retrieving-input"></a>
 ### Nhận dữ liệu đầu vào
 
 Khi câu lệnh được thực thi, rõ ràng là chúng ta cần lấy được giá trị của các đối số và tuỳ chọn được nhận vào câu lệnh. Để làm được điều này, bạn cần sử dụng tới phương thức `argument` và `option`:
+
+`argument` => sử dụng   $this->argument('user'); ==> return giá trị nhập vào 
+
+// nếu option không sử dụng dấu yêu cầu gán giá trị = 
+`option` => sử dụng    if ($this->option("name")) ==> return true or false.
+
+// nếu sử dụng dấu = giá trị gán ==> bằng giá trị gán.
+
 
     /**
      * Execute the console command.
@@ -241,9 +249,12 @@ Phương thức `anticipate` có thể sử dụng để cung cấp tự động
 
     $name = $this->anticipate('What is your name?', ['Taylor', 'Dayle']);
 
-Nếu như bạn cần đưa ra một danh sách các sự lựa chọn, bạn có thể dùng `choice`. Người dùng sẽ chọn đáp án bằng cách nhập vào index của câu trả lời, và giá trị này sẽ được trả lại cho bạn. Bạn có thể thiệt lập giá trị chọn lựa mặc định nếu như mà người dùng không chọn gì:
+Nếu như bạn cần đưa ra một danh sách các sự lựa chọn, bạn có thể dùng `choice`. Người dùng sẽ chọn đáp án bằng cách nhập vào index của câu trả lời thay vì nhập sau dấu =, và giá trị này sẽ được trả lại cho bạn. Bạn có thể thiệt lập giá trị chọn lựa mặc định nếu như mà người dùng không chọn gì:
 
-    $name = $this->choice('What is your name?', ['Taylor', 'Dayle'], $default);
+      if ($this->option("name")) {
+                $default = "0";
+                $name = $this->choice('What is your name?', ['Taylor', 'Dayle', 'show', 'edit'], $default);
+            }
 
 <a name="writing-output"></a>
 ### Hiển thị nội dung
