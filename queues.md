@@ -18,6 +18,10 @@
 <a name="introduction"></a>
 ## Giới thiệu
 
+Hàng đợi cho phép bạn để trì hoãn việc xử lý một công việc tốn, chẳng hạn như gửi email thời gian, cho đến một thời gian sau đó. Trì hoãn những nhiệm vụ tốn thời gian đáng kể tốc độ lên yêu cầu web để ứng dụng của bạn. 
+
+Các tập tin cấu hình hàng đợi được lưu trữ trong config/queue.php Trong tập tin này, bạn sẽ tìm thấy các cấu hình kết nối cho mỗi trình điều khiển hàng đợi được bao gồm trong khuôn khổ, trong đó bao gồm một database, Beanstalkd , Amazon SQS , Redis , và synchronous  (để sử dụng tại địa phương) điều khiển.  
+
 
 <a name="configuration"></a>
 ### Cấu hình
