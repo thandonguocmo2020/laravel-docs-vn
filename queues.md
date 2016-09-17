@@ -26,7 +26,7 @@ Các tập tin cấu hình hàng đợi được lưu trữ trong config/queue.p
 <a name="configuration"></a>
 ### Cấu hình
 
-File cấu hình được lưu trong `config/queue.php`. Trong file này bạn sẽ muốn tìm cấu hình kết nối cho mỗi queue drivers được đi kèm với framework, bao gồm database, [Beanstalkd](http://kr.github.com/beanstalkd), [Amazon SQS](http://aws.amazon.com/sqs), [Redis](http://redis.io), và synchronous driver (để sử dụng local).
+File cấu hình được lưu trong `config/queue.php`. Trong file này bạn sẽ muốn tìm cấu hình kết nối cho mỗi queue drivers được đi kèm với framework, bao gồm `database`, [Beanstalkd](http://kr.github.com/beanstalkd), [Amazon SQS](http://aws.amazon.com/sqs), [Redis](http://redis.io), và `sync`  driver (để sử dụng local config/filesystems.php).
 
 Driver `null` cũng có để đơn giản là thực hiện bỏ queued jobs.
 
