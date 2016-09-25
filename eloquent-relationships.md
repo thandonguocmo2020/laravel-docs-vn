@@ -2,12 +2,12 @@
 
 - [Giới thiệu](#introduction)
 - [Định nghĩa các quan hệ](#defining-relationships)
-    - [Một - Một](#one-to-one) `Một thể loại có duy nhất 1 sản phẩm - Một sản phẩm thuộc về một thể loại`
-    - [Một - Nhiều](#one-to-many) `Một thể loại có nhiều sản phẩm - Nhiều sản phẩm thuộc về một thể loại`
-    - [Nhiều - Nhiều](#many-to-many) ` Một thể loại có nhiều sản phẩm - Một sản phẩm thuộc về nhiều thể loại`
-    - [Has Many Through](#has-many-through) `Mối quan hệ lấy dữ liệu thông qua một bảng liên quan `
-    - [Quan hệ đa hình](#polymorphic-relations)
-    - [Quan hệ đa hình nhiều nhiều](#many-to-many-polymorphic-relations)
+    - [Một - Một](#one-to-one) `1 table chỉ chứa duy nhất 1 bản ghi với 1 column riêng mà chứa id bảng nó thuộc về.`
+    - [Một - Nhiều](#one-to-many) `1 table có thể chứa nhiều bản ghi với 1 column riêng mà chứa các id của bảng nó thuộc về`
+    - [Nhiều - Nhiều](#many-to-many) ` 2 bảng đều chứa 1 column mà chứa id của nhau và có thể chứa nhiều bản ghi truy xuất sang nhau`
+    - [Has Many Through](#has-many-through) `Lấy bản ghi của  1 bảng thông qua  một bảng trung gian. `
+    - [Quan hệ đa hình](#polymorphic-relations) `1 bản ghi chỉ thuộc về 1 bản ghi là bản ghi id "trong 1 bảng hay nhiều bảng khác"`
+    - [Quan hệ đa hình nhiều nhiều](#many-to-many-polymorphic-relations)`1 bản ghi có thể có nhiều hoặc thuộc về nhiều bản ghi trong các bảng khác nhau`
 - [Truy vấn quan hệ](#querying-relations)
     - [Eager Loading](#eager-loading)
     - [Constraining Eager Loads](#constraining-eager-loads)
