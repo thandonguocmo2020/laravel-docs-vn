@@ -589,6 +589,47 @@ tương tự để truy xuất các model khác ......
         taggable_id - integer
         taggable_type - string
 
+
+Bảng trung gian chứa 2 column với đuôi là bắt buộc còn name phía trước tùy chọn :
+
+$name + _id
+$name + _type
+
+tag_id == Tùy chọn.
+
+Bắt buộc column đặt như thế vì trong function contrusct của mối quan hệ đa chiều sử dụng mặc định
+
+$name_id.
+$name_type.
+
+
+### Định nghĩa method :
+
+morphedByMany() 
+
+* Nhận tất cả các bài viết mà được gán thẻ này.
+
+
+morphToMany()
+
+* Nhận được tất cả các thẻ tag của bài viết.
+
+
+## Định nghĩa tham số truyền vào    
+     
+morphToMany($related, $name, $table = null, $foreignKey = null, $otherKey = null, $inverse = false)
+
+Method morphToMany có 6 tham số sử dụng như sau 
+
+1. Class Model có mỗi quan hệ.
+2. Tên column trong bảng trung gian. Name mà sẽ là tên cột thứ 2 và 3  đã khai báo trong bảng dữ liệu $name+_ic và $name+_type.
+3. Tên bảng trung gian.
+4. tên khóa ngoại 
+5. Cột chứa mà chứa id của bảng khác.
+6. Cho phép nghịch đảo quan hệ ko
+
+
+
 #### Cấu trúc Model
 
 Tiếp theo, chúng ta sẽ định nghĩa các mối quan hệ trên model. Model `Post` và `Video` sẽ đều có một phương thức `tags` gọi tới phương thức `morphToMany` trên lớp Eloquent:
@@ -609,6 +650,8 @@ Tiếp theo, chúng ta sẽ định nghĩa các mối quan hệ trên model. Mod
             return $this->morphToMany('App\Tag', 'taggable');
         }
     }
+    
+
 
 #### Defining The Inverse Of The Relationship
 
@@ -638,6 +681,9 @@ Tiếp theo, trên model `Tag`, bạn nên định nghĩa một phương thức 
             return $this->morphedByMany('App\Video', 'taggable');
         }
     }
+
+
+
 
 #### Lấy dữ liệu quan hệ
 
