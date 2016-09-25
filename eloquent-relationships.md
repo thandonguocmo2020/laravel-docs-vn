@@ -386,17 +386,19 @@ Nếu bạn muốn tùy chỉnh khóa ngoại bận cần tham số 3 và 4
 
 <a name="polymorphic-relations"></a>
 
-### Quan hệ đa hình - "một bản ghi chỉ thuộc duy nhất một bản ghi trong model khác".
+### Quan hệ đa hình - "Nhận được tất cả các dữ liệu từ model quan hệ".
 
-** Định nghĩa 1 bảng có thể có nhiều quan với 1 hoặc nhiều bảng khác nhau **
+** Định nghĩa 1 bảng có thể có nhiều quan hệ với nhiều bảng khác nhau **
 
-Truy xuất từ model khác tới table định nghĩa đa hình :
++ Nhận được tất cả các Model Object mà có bản ghi mà sở hữu dữ liệu id của bảng đa hình.
 
-lấy 1 danh sách bản ghi đa hình mà có id và class phù hợp với bảng gọi đến.
+  return $this->morphTo();
+  
++ Nhận được tất cả dữ liệu từ model sở hữu "nhiều" :
 
-Truy xuất từ model đa hình :
+từ id sở hữu đưa vào where table_id và table_type => các id tồn tại. 
 
-lấy id của model mà bản ghi đa hình đó thuộc về.
+ return $this->morphMany('App\Like', 'likeable');
 
 #### Cấu trúc bảng
 
@@ -546,13 +548,21 @@ hoặc truy vuất 1 bản ghi trong "table đa hình" thuộc về 1 bảng ghi
 <a name="many-to-many-polymorphic-relations"></a>
 
 
-### Quan hệ đa hình nhiều - nhiều   "Một bản ghi có thể thuộc về nhiều bản ghi trong table khác nhau".
+### Quan hệ đa hình nhiều - nhiều   "Một bản ghi có thể thuộc sở hữu nhiều bản ghi của các model khác"
 
-Ví dụ 1 tag cùng thuộc về product - video - post.
+Ví dụ bạn có thể có 1 người dùng có thể có nhiều quyền hoặc 1 vai trò sở hữu nhiều người dùng. 1 vai trò cũng sở hữu nhiều quyền...
+
+
+Như vậy quan hệ đa hình xuất hiện.
+
+Đơn giản hơn Ví dụ 1 tag cùng thuộc về product - video - post.
 
 Truy xuất dữ liệu chủ yếu phụ thuộc vào bảng trung gian :
 
-nếu có 3 bảng quan hệ đa hình thì có 3 column trong bảng trung gian. 
+nếu có 4 bảng quan hệ đa hình thì có 4 column trong bảng trung gian.
+
+các column này đều là số mặc định là 0.
+
 
 + Từ bảng trung gian bạn có thể truy xuất dữ liệu đa hình ví dụ :
 
