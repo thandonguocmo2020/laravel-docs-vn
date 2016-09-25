@@ -386,39 +386,67 @@ Nếu bạn muốn tùy chỉnh khóa ngoại bận cần tham số 3 và 4
 
 <a name="polymorphic-relations"></a>
 
-### Quan hệ đa hình
+### Quan hệ đa hình - "một bản ghi chỉ thuộc duy nhất một bản ghi trong model khác".
+
+** Định nghĩa 1 bảng có thể có nhiều quan với 1 hoặc nhiều bảng khác nhau **
+
+Truy xuất từ model khác tới table định nghĩa đa hình :
+
+lấy 1 danh sách bản ghi đa hình mà có id và class phù hợp với bảng gọi đến.
+
+Truy xuất từ model đa hình :
+
+lấy id của model mà bản ghi đa hình đó thuộc về.
 
 #### Cấu trúc bảng
 
-Quan hệ đa hình cho phép một bảng có thể thuộc về nhiều hơn 1 bảng.  Ví dụ, tưởng tượng người dùng của ứng dụng có thể "like" cả product và comment. Sử dụng mối quan hệ đa hình, bạn có thể sử dụng duy nhất một bảng `likes` cho cả 2 ngữ cảnh trên. 
+Quan hệ đa hình cho phép một bảng có thể thuộc về nhiều hơn 1 bảng. 
 
-Thông qua mô hình này bạn có thể lấy ra các comment của 1 sản phẩm.
-Và like của một sản phẩm + like của một comment ngữ cảnh quan hệ đa bảng của like tạo nên quan hệ này:
 
-    product
+HÃY TƯỞNG TƯỢNG : người dùng có thể LIKE :
+
++ VIDEO
++ POST
++ COMMENT
+...... 
+
+NHIỀU BẢN GHI LIKE "chỉ thuộc về 1" bản ghi của video hoặc post hoặc comment.
+
+Để định nghĩa một mode biết được like này thuộc về Video hay Post hay Comment ta dùng mối quan hệ đa hình.
+
+Sử dụng mối quan hệ đa hình, bạn có thể sử dụng duy nhất một bảng `likes` cho cả 3 ngữ cảnh trên. 
+
+Thông qua mô hình này bạn có thể lấy ra các like thuộc về 1 bản ghi của model khác.
+
+Để đơn giản hơn ta sử dụng 2 ngữ cảnh thay vì 3 ngữ cảnh. 2 ngữ cảnh là post và comment :
+
+Tạo nên quan hệ này:
+
+    Post
         id - integer
         title - string
         body - text
 
-    comments
+    Comment
         id - integer
         post_id - integer
         body - text
 
     likes
         id - integer
-        likeable_id - integer
-        likeable_type - string
+        table_id - integer
+        table_type - string
 
- Có hai cột quan trong cần ghi nhớ đó là `likeable_id` và `likeable_type` trên table `likes`. 
+ Có hai cột quan trọng cần ghi nhớ đó là `table_id` và `table_type` trên table `likes`. 
  
- Cột `likeable_id` sẽ lưu giữ giá trị ID của sản phẩm hoặc bình luận
+ Cột `likeable_id` sẽ lưu giữ giá trị ID của post bài viết hoặc ID comment bình luận
+ 
  Trong khi đó cột `likeable_type` sẽ lưu giữ tên class của model sở hữu ID  đó.
  
 
-#### Cấu trúc Model
+#### Cấu trúc Model model đa hình "model like" 
 
-Tiếp theo, hãy xem xét các định nghĩa cần thiết cho model để tạo nên quan hệ này:
+Tiếp theo, Định nghĩa cho model để tạo nên quan hệ này:
 
     <?php
 
@@ -437,10 +465,10 @@ Tiếp theo, hãy xem xét các định nghĩa cần thiết cho model để t�
         }
     }
 
-    class Product extends Model
+    class Post extends Model
     {
         /**
-         * Nhận tất cả các id like thuộc về sản phẩm
+         * Nhận tất cả các id like thuộc về bài viết
          */
         public function likes()
         {
@@ -457,22 +485,24 @@ Tiếp theo, hãy xem xét các định nghĩa cần thiết cho model để t�
         {
             return $this->morphMany('App\Like', 'likeable');
         }
+	
+	// tham số 1 là bảng dữ liệu cần lấy ở đây là dữ liệu từ bảng like
+	// tham số 2 là tên function của model trả về ở bảng like thuộc về là post hoặc post
     }
 
-// tham số 1 là bảng dữ liệu cần lấy ở đây là dữ liệu từ bảng like
-// tham số 2 là tên function trả về tên của model thuộc về là product hoặc post
+
 
 #### Lấy thông tin từ quan hệ đa hình
 
-Một khi các các bảng dữ liệu và model được định nghĩa, bạn có thể truy cập vào quan hệ thông qua các model. Ví dụ để truy cập tất cả like của một sản phẩm, chúng ta đơn giản chỉ cần sử dụng thuộc tính động `likes`:
+Một khi các các bảng dữ liệu và model được đa hình được định nghĩa, bạn có thể truy cập vào quan hệ thông qua các model. Ví dụ để truy cập tất cả like của một bài viết , chúng ta đơn giản chỉ cần sử dụng thuộc tính động function `likes`:
 
-    $product = App\Product::find(1);
+    $Post = App\Post::find(1);
 
-    foreach ($product->likes as $like) {
+    foreach ($Post->likes as $like) {
         //
     }
 
-Bạn cũng có thể lấy chính chủ của một quan hệ đa hình từ model đa hình bằng cách truy câp tên của phương thức mà gọi tới `morphTo`. Trong trường hợp này, đó là phương thức `likeable` trên model `Like`. Vì vậy chúng ta sẽ truy cập phương thức đó như là một thuộc tính động:
+Bạn cũng có thể lấy chính chủ của một quan hệ đa hình từ model đa hình "model like" bằng cách truy câp tên của phương thức mà gọi tới `morphTo`. Trong trường hợp này, đó là phương thức `likeable` trên model `Like`. Vì vậy chúng ta sẽ truy cập phương thức đó như là một thuộc tính động:
 
     $like = App\Like::find(1);
 
@@ -482,11 +512,13 @@ function quan hệ `likeable` trên model `Like` sẽ trả về 1 thể hiện 
 
 #### Tùy chỉnh các kiểu đa hình
 
-Mặc định, Laravel sẽ sử dụng tên Class đầy đủ để lưu giữ model được liên quan. Cho một thể hiện của class, đã có ở ví dụ trên nơi mà một `Like` có thể thuộc về một `Product` hoặc một `Comment`, mặc định `likeable_type` sẽ hoặc là `App\Product` hoặc `App\Comment` tương ứng. 
+Mặc định, Laravel sẽ sử dụng tên Class đầy đủ để lưu giữ model được liên quan. Cho một thể hiện của class, đã có ở ví dụ trên nơi mà một `Like` có thể thuộc về một `Post` hoặc một `Comment`, mặc định `table_type` sẽ hoặc là `App\Post` hoặc `App\Comment` tương ứng. 
 
-Tuy nhiên, bạn có thể muốn tách database từ cấu trúc bên trong của ứng dụng của bạn. Trong trường hợp đó, bạn phải định nghĩa một quan hệ "morph map" để thông báo cho Eloquent sử dụng tên bảng liên quan với mỗi model thay vì sử dụng tên class đầy đủ:
+Tuy nhiên, bạn có thể muốn tách database từ cấu trúc bên trong của ứng dụng của bạn. 
 
-Bạn phải đăng kí `morphMap` trong hàm `boot` của `AppServiceProvider` hoặc tạo 1 service provider tách biệt nếu bạn muốn.
+Bạn phải định nghĩa quan hệ "morph map" để thông báo cho Eloquent sử dụng tên bảng liên quan thay vì sử dụng tên class đầy đủ:
+
+Bạn phải đăng kí `morphMap` trong hàm `boot` của `AppServiceProvider` hoặc tạo 1 service provider tách biệt.
 
     use Illuminate\Database\Eloquent\Relations\Relation;
 
@@ -504,16 +536,41 @@ Hoặc bạn muốn chỉ đinh một chuỗi tùy chọn liên quan với mỗi
         'likes' => App\Like::class,
     ]);
 
+Quan hệ đa hình được định nghĩa hữu dụng khi một 1 bản ghi có thể thuộc về nhiều bản ghi trong 1 table khác.
+
+Để truy xuất được 1 model sở hữu nhiều bản ghi trong table đa hình
+
+hoặc truy vuất 1 bản ghi trong "table đa hình" thuộc về 1 bảng ghi "table khác" dễ dàng ta sử dụng nó.
 
 
 <a name="many-to-many-polymorphic-relations"></a>
 
 
-### Quan hệ đa hình nhiều - nhiều
+### Quan hệ đa hình nhiều - nhiều   "Một bản ghi có thể thuộc về nhiều bản ghi trong table khác nhau".
+
+Ví dụ 1 tag cùng thuộc về product - video - post.
+
+Truy xuất dữ liệu chủ yếu phụ thuộc vào bảng trung gian :
+
+nếu có 3 bảng quan hệ đa hình thì có 3 column trong bảng trung gian. 
+
++ Từ bảng trung gian bạn có thể truy xuất dữ liệu đa hình ví dụ :
+
+lấy ra bản các bản ghi có cùng 1 tag.
+
++ where tag_id => Có được tất cả product_id và video_id và post_id sở hữu tag đó.
+
+lấy ra bản ghi theo ngữ cảnh :
+
++ where tag_id và product_id => Có được tất cả bản ghi có tag_id và product_id 
+
+lấy tất cả tag của một product :
+
++ where product_id => có được tất cả các tag của product id đó.
+
+tương tự để truy xuất các model khác ......
 
 #### Cấu trúc bảng
-
-Thêm vào mối quan hệ đa hình truyền thống, bạn cũng có thể định nghĩa quan hệ đa hình nhiều - nhiều. Ví dụ 1 blog model `Post` và `Video` có thể chia sẻ 1 liên kết đa hình tới model `Tag`. Sử dụng quan hệ đa hình nhiều - nhiều cho phép bạn có một danh sách các tag không trùng lặp mà được chia sẻ qua các blog post và video. Đầu tiên, hãy xem về cấu trúc bảng:
 
     posts
         id - integer
