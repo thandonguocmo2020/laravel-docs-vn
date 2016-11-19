@@ -1,23 +1,10 @@
-Database Testing
- 
 
-Introduction
-Resetting The Database After Each Test
-Using Migrations
-Using Transactions
-Writing Factories
-Factory States
-Using Factories
-Creating Models
-Persisting Models
-Relationships
 * Giới Thiệu  *
 
-Laravel cung cấp một loạt các công cụ  tool hữu ích mà làm cho việc sử dụng cơ sở dữ liệu của bạn dễ dàng hơn. Đầu tiên bạn có thể sử dụng các  seeInDatabase  Hỗ trợ các thư viện kiểm tra khẳng định dữ liệu có tồn tại trong cơ sở dữ liệu. Khớp với các tiêu chí đã được thiết lập. 
 
-Trong ví dụ của chúng tôi nếu bạn muốn xác minh rằng có một bản ghi của table user với email có giá trị là  sally@example.com   bạn có thể sử dụng.  
+Laravel cung cấp một loạt các công cụ  tool hữu ích mà làm cho cơ sở dữ liệu của bạn dễ dàng hơn. Đầu tiên bạn có thể sử dụng các  seeInDatabase  Hỗ trợ các thư viện kiểm tra khẳng định dữ liệu có tồn tại trong cơ sở dữ liệu. Khớp với các tiêu chí đã được thiết lập. 
 
-Đoạn mã trong  seeInDatabase trông như thế này :
+Trong ví dụ của chúng tôi nếu bạn muốn xác minh rằng có một bản ghi của table user với email có giá trị là sally@example.com   bạn có thể sử dụng.  Đoạn mã trong  seeInDatabase trông như thế này :
 
 
 ``` 
@@ -32,7 +19,7 @@ public function testDatabase()
 ```
 
 
-Tất nhiên method seeInDatebase là hỗ trợ cho tiện việc xác định. Bạn cũng có thể sử dụng bất kỳ các phương pháp có trong PHPUnit để bổ sung cho việc thử nghiệm của bạn.
+Tất nhiên method seeInDatebase là hỗ trợ cho việc xác định. Bạn cũng có thể sử dụng bất kỳ các phương pháp có trong PHPUnit để bổ sung cho việc thử nghiệm của bạn.
 
 * Reset Database Sau Mỗi thử nghiệm *
 
@@ -103,10 +90,13 @@ Thay vì tự xác định và viết các bản ghi này bạn có thể tự �
 
 Laravel cung cấp cho bạn mặc định các thuộc tính của Eloquent models mà sẽ sử dụng model factories. 
 
-Để tiếp tục nhìn vào file database/factories/ModelFactory.php  trong ứng dụng của bạn. Trong tập tin này có chứa 1 định nghĩa factories.
+Để tiếp tục nhìn vào file database/factories/ModelFactory.php trong ứng dụng của bạn. 
+
+Tập tin này có chứa 1 định nghĩa factories trước khi bạn muốn sử dụng bạn cần định nghĩa các thuộc tính model và giá trị  tự động tạo
 
 ```
 $factory->define(App\User::class, function (Faker\Generator $faker) {
+
     static $password;
 
     return [
@@ -118,17 +108,18 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 ```
 
-Trong method function define “định nghĩa factories”  cung cấp function đóng cửa “Closure” mà sẽ phục vụ App\User::class Model.
- 
-Bạn có thể trả lại tất cả các thuộc tính mặc định ban đầu được tự động tạo cho các thuộc tính model. 
 
-Bạn có thể thấy đóng cửa phương pháp function() trả lại một thể hiện của class  Faker\Generator $faker một thư viện của php  “https://github.com/fzaninotto/Faker” mà tự động tạo ra các dữ liệu có giá trị mặc định.
+Trong phương pháp định nghĩa này define() sẽ có 2 tham số định nghĩa như sau :  tham số  1 model mà bạn sẽ làm việc, tham số 2 là một function thực thi.
+ 
+Bạn có thể return tất cả các giá trị ban đầu mà sẽ được tự động tạo để chuẩn bị cho quá trình gọi.
+
+
+Bạn có thể thấy đóng cửa phương pháp function() trả lại một thể hiện của class  Faker\Generator $faker một thư viện của php  “https://github.com/fzaninotto/Faker” mà bạn có thể dùng thư viện cùng các method trong đó để auto tạo ra các dữ liệu tương ứng.
 
 Tất nhiên bạn có thể tự động tạo ra các file giống như ModelFactory.php  file. Ví dụ như các model User hay Comment 
 giống như UserFactory.php và CommentFactory.php tập tin trong bạn database/factories thư mục.
 
 Tất cả các tập tin trong các factories thư mục sẽ tự động được load bởi Laravel.
-
 
 * Factory States *
 
