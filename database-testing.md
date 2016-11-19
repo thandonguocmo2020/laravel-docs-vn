@@ -1,4 +1,5 @@
 Database Testing
+ 
 
 Introduction
 Resetting The Database After Each Test
@@ -10,11 +11,16 @@ Using Factories
 Creating Models
 Persisting Models
 Relationships
+* Giới Thiệu  *
 
-Introduction
+Laravel cung cấp một loạt các công cụ  tool hữu ích mà làm cho việc sử dụng cơ sở dữ liệu của bạn dễ dàng hơn. Đầu tiên bạn có thể sử dụng các  seeInDatabase  Hỗ trợ các thư viện kiểm tra khẳng định dữ liệu có tồn tại trong cơ sở dữ liệu. Khớp với các tiêu chí đã được thiết lập. 
 
-Laravel provides a variety of helpful tools to make it easier to test your database driven applications. First, you may use the seeInDatabase helper to assert that data exists in the database matching a given set of criteria. For example, if you would like to verify that there is a record in the users table with the email value of sally@example.com, you can do the following:
+Trong ví dụ của chúng tôi nếu bạn muốn xác minh rằng có một bản ghi của table user với email có giá trị là  sally@example.com   bạn có thể sử dụng.  
 
+Đoạn mã trong  seeInDatabase trông như thế này :
+
+
+``` 
 public function testDatabase()
 {
     // Make call to application...
@@ -23,18 +29,21 @@ public function testDatabase()
         'email' => 'sally@example.com'
     ]);
 }
-Of course, the seeInDatabase method and other helpers like it are for convenience. You are free to use any of PHPUnit's built-in assertion methods to supplement your tests.
+```
 
 
-Resetting The Database After Each Test
+Tất nhiên method seeInDatebase là hỗ trợ cho tiện việc xác định. Bạn cũng có thể sử dụng bất kỳ các phương pháp có trong PHPUnit để bổ sung cho việc thử nghiệm của bạn.
 
-It is often useful to reset your database after each test so that data from a previous test does not interfere with subsequent tests.
+* Reset Database Sau Mỗi thử nghiệm *
 
+Nó thường là hữu ích để thiết lập lại cơ sở dữ liệu của bạn sau mỗi bài kiểm tra để các dữ liệu từ một thử nghiệm trước đó không can thiệp với các xét nghiệm tiếp theo.
 
-Using Migrations
+* Sử dụng Migrations *
 
-One approach to resetting the database state is to rollback the database after each test and migrate it before the next test. Laravel provides a simple DatabaseMigrations trait that will automatically handle this for you. Simply use the trait on your test class and everything will be handled for you:
+Một cách tiếp cận để đặt lại trạng thái cơ sở dữ liệu là rollback cho cơ sở dữ liệu sau mỗi lần kiểm tra.
+Laravel cung cấp một đơn giản DatabaseMigrations tính trạng đó sẽ tự động xử lý này cho bạn Đơn giản chỉ cần sử dụng trên trait lớp giao diện các method có sẵn sẽ hỗ trợ.
 
+```
 <?php
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -56,11 +65,12 @@ class ExampleTest extends TestCase
              ->see('Laravel 5');
     }
 }
+```
+* Sử dụng Transactions *
 
-Using Transactions
+Một cách khác để đặt lại trạng thái cơ sở dữ liệu là để bọc từng trường hợp thử nghiệm bên trong một giao dịch transactions trait  lớp giao diện mà có các method hỗ trợ nó sẽ tự động sử lý cho bạn.
 
-Another approach to resetting the database state is to wrap each test case in a database transaction. Again, Laravel provides a convenient DatabaseTransactions trait that will automatically handle this for you:
-
+```
 <?php
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -82,12 +92,20 @@ class ExampleTest extends TestCase
              ->see('Laravel 5');
     }
 }
-By default, this trait will only wrap the default database connection in a transaction. If your application is using multiple database connections, you should define a  $connectionsToTransact property on your test class. This property should be an array of connection names to execute the transactions on.
+```
 
-Writing Factories
 
-When testing, it is common to need to insert a few records into your database before executing your test. Instead of manually specifying the value of each column when you create this test data, Laravel allows you to define a default set of attributes for each of your Eloquent models using model factories. To get started, take a look at the database/factories/ModelFactory.php file in your application. Out of the box, this file contains one factory definition:
 
+Viết  Factories
+
+Khi thử nghiệm người ta cần một vài bản ghi được chèn trước vào trong cơ sở dữ liệu của bạn.
+Thay vì tự xác định và viết các bản ghi này bạn có thể tự động tạo ra và thêm nó vào trong cơ sở dữ liệu.
+
+Laravel cung cấp cho bạn mặc định các thuộc tính của Eloquent models mà sẽ sử dụng model factories. 
+
+Để tiếp tục nhìn vào file database/factories/ModelFactory.php  trong ứng dụng của bạn. Trong tập tin này có chứa 1 định nghĩa factories.
+
+```
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     static $password;
 
@@ -98,14 +116,27 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
-Within the Closure, which serves as the factory definition, you may return the default test values of all attributes on the model. The Closure will receive an instance of the Faker PHP library, which allows you to conveniently generate various kinds of random data for testing.
+```
 
-Of course, you are free to add your own additional factories to the ModelFactory.php file. You may also create additional factory files for each model for better organization. For example, you could create UserFactory.php and CommentFactory.php files within your database/factories directory. All of the files within the factories directory will automatically be loaded by Laravel.
+Trong method function define “định nghĩa factories”  cung cấp function đóng cửa “Closure” mà sẽ phục vụ App\User::class Model.
+ 
+Bạn có thể trả lại tất cả các thuộc tính mặc định ban đầu được tự động tạo cho các thuộc tính model. 
+
+Bạn có thể thấy đóng cửa phương pháp function() trả lại một thể hiện của class  Faker\Generator $faker một thư viện của php  “https://github.com/fzaninotto/Faker” mà tự động tạo ra các dữ liệu có giá trị mặc định.
+
+Tất nhiên bạn có thể tự động tạo ra các file giống như ModelFactory.php  file. Ví dụ như các model User hay Comment 
+giống như UserFactory.php và CommentFactory.php tập tin trong bạn database/factories thư mục.
+
+Tất cả các tập tin trong các factories thư mục sẽ tự động được load bởi Laravel.
 
 
-Factory States
+* Factory States *
 
-States allow you to define discrete modifications that can be applied to your model factories in any combination. For example, your User model might have a delinquent state that modifies one of its default attribute values. You may define your state transformations using the state method:
+Có thể sửa đổi các giá trị có trong model factory từ mọi như như một sư phối hợp.
+Trong ví dụ dưới đây có một giá trị mặc định của một thuộc tính có trong model là account_status bạn có thể định nghĩa nó để nó nhận sự thay đổi bằng cách truyền vào tham số thứ 2.
+
+được gọ là một state method mà có thể thay đổi  :
+
 
 $factory->state(App\User::class, 'delinquent', function ($faker) {
     return [
@@ -113,97 +144,34 @@ $factory->state(App\User::class, 'delinquent', function ($faker) {
     ];
 });
 
-Using Factories
+Sử dụng Factory
 
+Tạo ra model 
+Một khi bạn đã định nghĩa  factory cho model của bạn, bạn có thể sử dụng chức năng factory() toàn cầu  trong testing hoặc seed files để tự động tạo các trường của model.
+Chúng ta cùng xem một ví dụ về việc tạo dữ liệu cho model. Đầu tiên chúng ta sẽ sử dụng một method make()  sex bắt đầu làm việc tạo ra các dữ liệu model nhưng chưa lưu chúng vào cơ sở dữ liệu.
 
-Creating Models
-
-Once you have defined your factories, you may use the global factory function in your tests or seed files to generate model instances. So, let's take a look at a few examples of creating models. First, we'll use the make method to create models but not save them to the database:
-
+Factory() sử dụng trong  seed files :
+``` 
 public function testDatabase()
 {
     $user = factory(App\User::class)->make();
 
     // Use model in tests...
 }
-You may also create a Collection of many models or create models of a given type:
-
-// Create three App\User instances...
+```
+bạn cũng có thể tạo ra hàng loạt bản ghi cho một model cua bạn bằng cách :
+```
+// Tạo ra ba bản ghi cho  App\User ví dụ ...
 $users = factory(App\User::class, 3)->make();
 
-// Create an "admin" App\User instance...
+// tạo ra một 1 bản ghi "admin" cho App\User ví dụ ...
 $user = factory(App\User::class, 'admin')->make();
 
-// Create three "admin" App\User instances...
+// Tạo ra ba bản ghi có giá trị admin cho App\User ví dụ ...
 $users = factory(App\User::class, 'admin', 3)->make();
+```
 Applying States
 
-You may also apply any of your states to the models. If you would like to apply multiple state transformations to the models, you should specify the name of each state you would like to apply:
+Bạn cũng có thể áp dụng state bằng cách định nghĩa một thay đổi hoặc nhiều thay đổi giá trị của mặc định bằng 
 
 $users = factory(App\User::class, 5)->states('deliquent')->make();
-
-$users = factory(App\User::class, 5)->states('premium', 'deliquent')->make();
-Overriding Attributes
-
-If you would like to override some of the default values of your models, you may pass an array of values to the make method. Only the specified values will be replaced while the rest of the values remain set to their default values as specified by the factory:
-
-$user = factory(App\User::class)->make([
-    'name' => 'Abigail',
-]);
-
-Persisting Models
-
-The create method not only creates the model instances but also saves them to the database using Eloquent's save method:
-
-public function testDatabase()
-{
-    // Create a single App\User instance...
-    $user = factory(App\User::class)->create();
-
-    // Create three App\User instances...
-    $users = factory(App\User::class, 3)->create();
-
-    // Use model in tests...
-}
-You may override attributes on the model by passing an array to the create method:
-
-$user = factory(App\User::class)->create([
-    'name' => 'Abigail',
-]);
-
-Relationships
-
-In this example, we'll attach a relation to some created models. When using the create method to create multiple models, an Eloquent collection instance is returned, allowing you to use any of the convenient functions provided by the collection, such as each:
-
-$users = factory(App\User::class, 3)
-           ->create()
-           ->each(function ($u) {
-                $u->posts()->save(factory(App\Post::class)->make());
-            });
-Relations & Attribute Closures
-
-You may also attach relationships to models using Closure attributes in your factory definitions. For example, if you would like to create a new User instance when creating a Post, you may do the following:
-
-$factory->define(App\Post::class, function ($faker) {
-    return [
-        'title' => $faker->title,
-        'content' => $faker->paragraph,
-        'user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        }
-    ];
-});
-These Closures also receive the evaluated attribute array of the factory that contains them:
-
-$factory->define(App\Post::class, function ($faker) {
-    return [
-        'title' => $faker->title,
-        'content' => $faker->paragraph,
-        'user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        },
-        'user_type' => function (array $post) {
-            return App\User::find($post['user_id'])->type;
-        }
-    ];
-});
