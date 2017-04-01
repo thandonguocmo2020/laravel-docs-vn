@@ -608,7 +608,9 @@ return json_decode((string) $response->getBody(), true);
 
 ``` 
 
-Hãy nhớ rằng, các token truy cập được tồn tại lâu dài theo cấu hình máy chủ mặc định. Tuy nhiên, bạn được tự do định cấu hình thời gian truy cập tối đa của thẻ nếu cần.
+Hãy nhớ rằng, các token truy cập được tồn tại lâu dài theo cấu hình máy chủ mặc định. 
+
+Tuy nhiên, bạn được tự do định cấu hình thời gian truy cập tối đa của thẻ nếu cần.
 
 
 #Requesting All Scopes
@@ -660,7 +662,8 @@ public function boot()
 
 ```
 
-Once a grant has been enabled, developers may use their client ID to request an access token from your application. The consuming application should make a redirect request to your application's  /oauth/authorize route like so:
+Once a grant has been enabled, developers may use their client ID to request an access token from your application.
+The consuming application should make a redirect request to your application's  /oauth/authorize route like so:
 
 Route::get('/redirect', function () {
     $query = http_build_query([
@@ -676,7 +679,8 @@ Remember, the /oauth/authorize route is already defined by the Passport::routes 
 
 Client Credentials Grant Tokens
 
-The client credentials grant is suitable for machine-to-machine authentication. For example, you might use this grant in a scheduled job which is performing maintenance tasks over an API. To retrieve a token, make a request to the oauth/token endpoint:
+The client credentials grant is suitable for machine-to-machine authentication. For example, you might use this grant in a scheduled 
+job which is performing maintenance tasks over an API. To retrieve a token, make a request to the oauth/token endpoint:
 
 $guzzle = new GuzzleHttp\Client;
 
@@ -693,19 +697,26 @@ echo json_decode((string) $response->getBody(), true);
 
 Personal Access Tokens
 
-Sometimes, your users may want to issue access tokens to themselves without going through the typical authorization code redirect flow. Allowing users to issue tokens to themselves via your application's UI can be useful for allowing users to experiment with your API or may serve as a simpler approach to issuing access tokens in general.
+Sometimes, your users may want to issue access tokens to themselves without going through the typical authorization code redirect flow.
+Allowing users to issue tokens to themselves via your application's UI can be useful for allowing users to experiment with your API or
+may serve as a simpler approach to issuing access tokens in general.
 
-Personal access tokens are always long-lived. Their lifetime is not modified when using the tokensExpireIn or refreshTokensExpireIn methods.
+Personal access tokens are always long-lived. Their lifetime is not modified when using the tokensExpireIn or refreshTokensExpireIn
+methods.
 
 Creating A Personal Access Client
 
-Before your application can issue personal access tokens, you will need to create a personal access client. You may do this using the passport:client command with the --personal option. If you have already run the passport:install command, you do not need to run this command:
+Before your application can issue personal access tokens, you will need to create a personal access client. You may do this using the
+passport:client command with the --personal option. If you have already run the passport:install command, you do not need to run this
+command:
 
 php artisan passport:client --personal
 
 Managing Personal Access Tokens
 
-Once you have created a personal access client, you may issue tokens for a given user using the  createToken method on the User model instance. The createToken method accepts the name of the token as its first argument and an optional array of scopes as its second argument:
+Once you have created a personal access client, you may issue tokens for a given user using the  createToken method on the User
+model instance. The createToken method accepts the name of the token as its first argument and an optional array of scopes as its
+second argument:
 
 $user = App\User::find(1);
 
@@ -716,12 +727,16 @@ $token = $user->createToken('Token Name')->accessToken;
 $token = $user->createToken('My Token', ['place-orders'])->accessToken;
 JSON API
 
-Passport also includes a JSON API for managing personal access tokens. You may pair this with your own frontend to offer your users a dashboard for managing personal access tokens. Below, we'll review all of the API endpoints for managing personal access tokens. For convenience, we'll use Axios to demonstrate making HTTP requests to the endpoints.
+Passport also includes a JSON API for managing personal access tokens. You may pair this with your own frontend to offer your users a
+dashboard for managing personal access tokens. Below, we'll review all of the API endpoints for managing personal access tokens.
+For convenience, we'll use Axios to demonstrate making HTTP requests to the endpoints.
 
-If you don't want to implement the personal access token frontend yourself, you can use the frontend quickstart to have a fully functional frontend in a matter of minutes.
+If you don't want to implement the personal access token frontend yourself, you can use the frontend quickstart to have a fully 
+functional frontend in a matter of minutes.
 GET /oauth/scopes
 
-This route returns all of the scopes defined for your application. You may use this route to list the scopes a user may assign to a personal access token:
+This route returns all of the scopes defined for your application. You may use this route to list the scopes a user may assign to a 
+personal access token:
 
 axios.get('/oauth/scopes')
     .then(response => {
@@ -729,7 +744,8 @@ axios.get('/oauth/scopes')
     });
 GET /oauth/personal-access-tokens
 
-This route returns all of the personal access tokens that the authenticated user has created. This is primarily useful for listing all of the user's token so that they may edit or delete them:
+This route returns all of the personal access tokens that the authenticated user has created. This is primarily useful for listing 
+all of the user's token so that they may edit or delete them:
 
 axios.get('/oauth/personal-access-tokens')
     .then(response => {
@@ -737,7 +753,8 @@ axios.get('/oauth/personal-access-tokens')
     });
 POST /oauth/personal-access-tokens
 
-This route creates new personal access tokens. It requires two pieces of data: the token's name and the scopes that should be assigned to the token:
+This route creates new personal access tokens. It requires two pieces of data: the token's name and the scopes that should be assigned
+to the token:
 
 const data = {
     name: 'Token Name',
@@ -762,7 +779,8 @@ Protecting Routes
 
 Via Middleware
 
-Passport includes an authentication guard that will validate access tokens on incoming requests. Once you have configured the api guard to use the passport driver, you only need to specify the  auth:api middleware on any routes that require a valid access token:
+Passport includes an authentication guard that will validate access tokens on incoming requests. Once you have configured the api
+guard to use the passport driver, you only need to specify the  auth:api middleware on any routes that require a valid access token:
 
 Route::get('/user', function () {
     //
@@ -770,7 +788,8 @@ Route::get('/user', function () {
 
 Passing The Access Token
 
-When calling routes that are protected by Passport, your application's API consumers should specify their access token as a Bearer token in the Authorization header of their request. For example, when using the Guzzle HTTP library:
+When calling routes that are protected by Passport, your application's API consumers should specify their access token as a Bearer 
+token in the Authorization header of their request. For example, when using the Guzzle HTTP library:
 
 $response = $client->request('GET', '/api/user', [
     'headers' => [
@@ -784,9 +803,14 @@ Token Scopes
 
 Defining Scopes
 
-Scopes allow your API clients to request a specific set of permissions when requesting authorization to access an account. For example, if you are building an e-commerce application, not all API consumers will need the ability to place orders. Instead, you may allow the consumers to only request authorization to access order shipment statuses. In other words, scopes allow your application's users to limit the actions a third-party application can perform on their behalf.
+Scopes allow your API clients to request a specific set of permissions when requesting authorization to access an account. For example,
+if you are building an e-commerce application, not all API consumers will need the ability to place orders. Instead, you may allow the 
+consumers to only request authorization to access order shipment statuses. In other words, scopes allow your application's users to 
+limit the actions a third-party application can perform on their behalf.
 
-You may define your API's scopes using the Passport::tokensCan method in the boot method of your AuthServiceProvider. The tokensCan method accepts an array of scope names and scope descriptions. The scope description may be anything you wish and will be displayed to users on the authorization approval screen:
+You may define your API's scopes using the Passport::tokensCan method in the boot method of your AuthServiceProvider.
+The tokensCan method accepts an array of scope names and scope descriptions. The scope description may be anything you wish and will be
+displayed to users on the authorization approval screen:
 
 use Laravel\Passport\Passport;
 
@@ -799,7 +823,8 @@ Assigning Scopes To Tokens
 
 When Requesting Authorization Codes
 
-When requesting an access token using the authorization code grant, consumers should specify their desired scopes as the scope query string parameter. The scope parameter should be a space-delimited list of scopes:
+When requesting an access token using the authorization code grant, consumers should specify their desired scopes as the scope query
+string parameter. The scope parameter should be a space-delimited list of scopes:
 
 Route::get('/redirect', function () {
     $query = http_build_query([
@@ -813,13 +838,15 @@ Route::get('/redirect', function () {
 });
 When Issuing Personal Access Tokens
 
-If you are issuing personal access tokens using the User model's createToken method, you may pass the array of desired scopes as the second argument to the method:
+If you are issuing personal access tokens using the User model's createToken method, you may pass the array of desired scopes as the 
+second argument to the method:
 
 $token = $user->createToken('My Token', ['place-orders'])->accessToken;
 
 Checking Scopes
 
-Passport includes two middleware that may be used to verify that an incoming request is authenticated with a token that has been granted a given scope. To get started, add the following middleware to the $routeMiddleware property of your app/Http/Kernel.php file:
+Passport includes two middleware that may be used to verify that an incoming request is authenticated with a token that has been 
+granted a given scope. To get started, add the following middleware to the $routeMiddleware property of your app/Http/Kernel.php file:
 
 'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
 'scope' => \Laravel\Passport\Http\Middleware\CheckForAnyScope::class,
@@ -832,14 +859,16 @@ Route::get('/orders', function () {
 })->middleware('scopes:check-status,place-orders');
 Check For Any Scopes
 
-The scope middleware may be assigned to a route to verify that the incoming request's access token has at least one of the listed scopes:
+The scope middleware may be assigned to a route to verify that the incoming request's access token has at least one of the listed 
+scopes:
 
 Route::get('/orders', function () {
     // Access token has either "check-status" or "place-orders" scope...
 })->middleware('scope:check-status,place-orders');
 Checking Scopes On A Token Instance
 
-Once an access token authenticated request has entered your application, you may still check if the token has a given scope using the tokenCan method on the authenticated User instance:
+Once an access token authenticated request has entered your application, you may still check if the token has a given scope using the
+tokenCan method on the authenticated User instance:
 
 use Illuminate\Http\Request;
 
@@ -851,30 +880,40 @@ Route::get('/orders', function (Request $request) {
 
 Consuming Your API With JavaScript
 
-When building an API, it can be extremely useful to be able to consume your own API from your JavaScript application. This approach to API development allows your own application to consume the same API that you are sharing with the world. The same API may be consumed by your web application, mobile applications, third-party applications, and any SDKs that you may publish on various package managers.
+When building an API, it can be extremely useful to be able to consume your own API from your JavaScript application. This approach 
+to API development allows your own application to consume the same API that you are sharing with the world. The same API may be 
+consumed by your web application, mobile applications, third-party applications, and any SDKs that you may publish on various package
+managers.
 
-Typically, if you want to consume your API from your JavaScript application, you would need to manually send an access token to the application and pass it with each request to your application. However, Passport includes a middleware that can handle this for you. All you need to do is add the  CreateFreshApiToken middleware to your web middleware group:
+Typically, if you want to consume your API from your JavaScript application, you would need to manually send an access token to the
+application and pass it with each request to your application. However, Passport includes a middleware that can handle this for you.
+All you need to do is add the  CreateFreshApiToken middleware to your web middleware group:
 
 'web' => [
     // Other middleware...
     \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class,
 ],
-This Passport middleware will attach a laravel_token cookie to your outgoing responses. This cookie contains an encrypted JWT that Passport will use to authenticate API requests from your JavaScript application. Now, you may make requests to your application's API without explicitly passing an access token:
+This Passport middleware will attach a laravel_token cookie to your outgoing responses. This cookie contains an encrypted JWT that 
+Passport will use to authenticate API requests from your JavaScript application. Now, you may make requests to your application's API
+without explicitly passing an access token:
 
 axios.get('/user')
     .then(response => {
         console.log(response.data);
     });
-When using this method of authentication, Axios will automatically send the X-CSRF-TOKEN header. In addition, the default Laravel JavaScript scaffolding instructs Axios to send the X-Requested-With header:
+When using this method of authentication, Axios will automatically send the X-CSRF-TOKEN header. In addition, the default Laravel 
+JavaScript scaffolding instructs Axios to send the X-Requested-With header:
 
 window.axios.defaults.headers.common = {
     'X-Requested-With': 'XMLHttpRequest',
 };
-If you are using a different JavaScript framework, you should make sure it is configured to send the X-CSRF-TOKEN and X-Requested-With headers with every outgoing request.
+If you are using a different JavaScript framework, you should make sure it is configured to send the X-CSRF-TOKEN and X-Requested-With
+headers with every outgoing request.
 
 Events
 
-Passport raises events when issuing access tokens and refresh tokens. You may use these events to prune or revoke other access tokens in your database. You may attach listeners to these events in your application's EventServiceProvider:
+Passport raises events when issuing access tokens and refresh tokens. You may use these events to prune or revoke other access tokens
+in your database. You may attach listeners to these events in your application's EventServiceProvider:
 
 /**
  * The event listener mappings for the application.
@@ -893,7 +932,8 @@ protected $listen = [
 
 Testing
 
-Passport's actingAs method may be used to specify the currently authenticated user as well as its scopes. The first argument given to the actingAs method is the user instance and the second is an array of scopes that should be granted to the user's token:
+Passport's actingAs method may be used to specify the currently authenticated user as well as its scopes. The first argument
+given to the actingAs method is the user instance and the second is an array of scopes that should be granted to the user's token:
 
 public function testServerCreation()
 {
