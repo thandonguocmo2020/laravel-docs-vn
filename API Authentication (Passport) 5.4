@@ -311,32 +311,78 @@ First, developers building applications that need to interact with your applicat
 
 ** Các Lệnh passport:client Command **
 
-==> Lệnh này tạo ra các client máy khách mà chuyển hướng người dùng đ
+==> Lệnh này tạo ra các client mà chuyển hướng người dùng đến máy chủ của bạn để hỏi cấp thẻ token.
 
-The simplest way to create a client is using the passport:client Artisan command. This command may be used to create your own clients for testing your OAuth2 functionality. When you run the  client command, Passport will prompt you for more information about your client and will provide you with a client ID and secret:
+Cách đơn giản nhất để tạo một máy khách là sử dụng lệnh Artisan
 
+Lệnh này có thể được sử dụng để tạo ra các Client là của chính bạn để thử nghiệm chức năng OAuth2 trên máy chủ của bạn.
+
+Khi bạn chạy lệnh passport sẽ nhắc nhở bạn như nhập tên client và uri chuyển hướng để test OAUTH2.
+
+Bạn cần nhập vào user_id của người dùng và tên để bạn test thử.
+
+```
 php artisan passport:client
-JSON API
 
-Since your users will not be able to utilize the client command, Passport provides a JSON API that you may use to create clients. This saves you the trouble of having to manually code controllers for creating, updating, and deleting clients.
+```
 
-However, you will need to pair Passport's JSON API with your own frontend to provide a dashboard for your users to manage their clients. Below, we'll review all of the API endpoints for managing clients. For convenience, we'll use Axios to demonstrate making HTTP requests to the endpoints.
+###API JSON
 
-If you don't want to implement the entire client management frontend yourself, you can use the frontend quickstart to have a fully functional frontend in a matter of minutes.
+
+Vì người dùng ứng dụng của bạn họ không thể chạy lệnh artisan họ cần một giao diện đồ họa để đăng ký ứng dụng của họ. 
+
+Passport cung cấp 1 loạt các route API mà return chuỗi json mà bạn có thể dùng nó để tạo client.
+
+Điều này hạn chế bug khi phải tự kiểm soát mã cho việc tạo, cập nhật và xóa các máy Client.
+
+
+Tuy nhiên, Bạn sẽ cần phải ghép nối API JSON của Passport với ứng dụng giao diện đồ họa của bạn để cho người dùng có thể đăng ký CLient.
+
+
+Dưới đây là 1 số điểm kết nối của API để quản lý khách hàng. Để thuận tiện chúng tôi sẽ sử dụng Axios để ví dụ chạy vào các route API chức năng.
+
+
+``
+Nếu bạn không muốn thực hiện toàn bộ giao diện đồ họa quản lý khách hàng, 
+
+bạn có thể sử dụng lối trình bày nhanh Front-end QuickStart đã cung cấp  chỉ trong vài phút. Trước khi có lối trình diễn đầy đủ 
+
+Các điểm cuối đường dẫn tuyến đường APi sẽ là :
+
+```
 GET /oauth/clients
 
-This route returns all of the clients for the authenticated user. This is primarily useful for listing all of the user's clients so that they may edit or delete them:
 
-axios.get('/oauth/clients')
-    .then(response => {
-        console.log(response.data);
-    });
 POST /oauth/clients
 
-This route is used to create new clients. It requires two pieces of data: the client's name and a  redirect URL. The redirect URL is where the user will be redirected after approving or denying a request for authorization.
+PUT /oauth/clients/{client-id}
 
-When a client is created, it will be issued a client ID and client secret. These values will be used when requesting access tokens from your application. The client creation route will return the new client instance:
+DELETE /oauth/clients/{client-id}
 
+```
+
+
+
+If you don't want to implement the entire client management frontend yourself, you can use the frontend quickstart to have a fully functional frontend in a matter of minutes.
+
+*GET /oauth/clients*
+
+Route này chả lại tất cả các clients của người dùng để họ có thể dễ dàng chỉnh sửa hoặc xóa chúng:
+
+``` 
+   axios.get('/oauth/clients')
+     .then(response => {
+         console.log(response.data);
+     });
+    
+ ```  
+*POST /oauth/clients*
+
+Route này được sử dụng để tạo ra các new clients. Nó đòi hỏi hai trường dữ liệu là name client và 1 URL redirect sau khi ủy quyền được thoog qua.
+
+URL là nơi người dùng sẽ được chuyển hướng sau khi phê duyệt hoặc từ chối một yêu cầu cho phép.
+
+```
 const data = {
     name: 'Client Name',
     redirect: 'http://example.com/callback'
@@ -349,10 +395,13 @@ axios.post('/oauth/clients', data)
     .catch (response => {
         // List errors on response...
     });
-PUT /oauth/clients/{client-id}
+   ``` 
+    
+*PUT /oauth/clients/{client-id}*
 
-This route is used to update clients. It requires two pieces of data: the client's name and a redirect URL. The redirect URL is where the user will be redirected after approving or denying a request for authorization. The route will return the updated client instance:
+Đây là route để cập nhập thông tin của client 
 
+```
 const data = {
     name: 'New Client Name',
     redirect: 'http://example.com/callback'
@@ -365,20 +414,36 @@ axios.put('/oauth/clients/' + clientId, data)
     .catch (response => {
         // List errors on response...
     });
-DELETE /oauth/clients/{client-id}
+    
+ ```
+ 
+ 
+*DELETE /oauth/clients/{client-id}*
 
-This route is used to delete clients:
+Đây là route để của người dùng để delete client.
 
+
+```
 axios.delete('/oauth/clients/' + clientId)
     .then(response => {
         //
     });
+    
+```
 
-Requesting Tokens
 
-Redirecting For Authorization
+*Requesting Tokens*
 
-Once a client has been created, developers may use their client ID and secret to request an authorization code and access token from your application. First, the consuming application should make a redirect request to your application's /oauth/authorize route like so:
+Yêu cầu lấy Tokens của người dùng ủy quyền 
+
+Chuyển hướng đến quá trình xác thực
+
+Khi các client của họ được tạo. Các DEVELOPER của các client có thể sử dụng các ID và KHóa Secret để yêu cầu thẻ token từ người dùng của họ.
+
+Ứng dụng client sẽ phải tạo ra  một yêu cầu chuyển hướng đến tuyến đường passport cấp token có trên máy chủ của bạn.
+
+Tuyến đường này */oauth/authorize*
+```
 
 Route::get('/redirect', function () {
     $query = http_build_query([
@@ -390,17 +455,41 @@ Route::get('/redirect', function () {
 
     return redirect('http://your-app.com/oauth/authorize?'.$query);
 });
-Remember, the /oauth/authorize route is already defined by the Passport::routes method. You do not need to manually define this route.
-Approving The Request
+```
 
-When receiving authorization requests, Passport will automatically display a template to the user allowing them to approve or deny the authorization request. If they approve the request, they will be redirected back to the redirect_uri that was specified by the consuming application. The  redirect_uri must match the redirect URL that was specified when the client was created.
+Các tuyến đường này được tạo ra  bằng  Passport::routes method. Mà trước đó đã định nghĩa.
 
-If you would like to customize the authorization approval screen, you may publish Passport's views using the vendor:publish Artisan command. The published views will be placed in  resources/views/vendor/passport:
 
+
+#Approving The Request => Chấp nhận các request từ client gửi lên.
+
+Khi nhận yêu cầu từ request máy chủ Passport của bạn sẽ tự động hiển thị giao diện Teamplate để người dùng cho phép họ chấp thuận hoặc từ chối yêu cầu ủy quyền.
+
+Nếu quá trình được chấp nhận, họ sẽ được chuyển hướng trở lại với URL redirect_uri được xác định đăng ký bởi client ứng dụng.
+
+Khi client đã đăng ký được tạo ra.
+
+Nếu bạn muốn tạo tự động template để người dùng phê duyệt chấp thuận hoặc không dùng câu lệnh :
+
+````
 php artisan vendor:publish --tag=passport-views
-Converting Authorization Codes To Access Tokens
 
-If the user approves the authorization request, they will be redirected back to the consuming application. The consumer should then issue a POST request to your application to request an access token. The request should include the authorization code that was issued by your application when the user approved the authorization request. In this example, we'll use the Guzzle HTTP library to make the POST request:
+```
+
+
+#Converting Authorization Codes To Access Tokens => 
+
+Chuyển từ thẻ ủy quyền sang thẻ truy cập. token đổi access_token
+
+Nếu người dùng chấp nhận yêu cầu ủy quyền, họ sẽ được chuyển hướng trở lại ứng dụng với uri yêu cầu.
+
+Sau đó ứng dụng đó phải phát ra một yêu cầu với POST request đến ứng dụng máy chủ để đổi mã ủy quyền "token" lấy access token "thẻ truy cập"
+
+Lưu ý các yêu cầu phải có thẻ token thẻ ủy quyền được phát hành từ Passport máy chủ trước đó. 
+
+Đây là một ví dụ nữa khi request gửi post method với  Guzzle HTTP thư viện của php. có thể là ứng dụng laravel phiá client.
+
+```
 
 Route::get('/callback', function (Request $request) {
     $http = new GuzzleHttp\Client;
@@ -417,14 +506,24 @@ Route::get('/callback', function (Request $request) {
 
     return json_decode((string) $response->getBody(), true);
 });
-This /oauth/token route will return a JSON response containing access_token, refresh_token, and  expires_in attributes. The expires_in attribute contains the number of seconds until the access token expires.
 
-Like the /oauth/authorize route, the /oauth/token route is defined for you by the  Passport::routes method. There is no need to manually define this route.
+```
 
-Refreshing Tokens
+Đoạn này khá quan trọng : Đây là một tuyến đường mà sẽ trả về truy cập là một chuỗi JSON phản ứng có chứa thẻ truy cập, thời gian truy cập hết hạn,
+và thẻ làm mới thẻ truy cập. Route */oauth/token* access_token, refresh_token, and  expires_in thuộc tính. 
 
-If your application issues short-lived access tokens, users will need to refresh their access tokens via the refresh token that was provided to them when the access token was issued. In this example, we'll use the Guzzle HTTP library to refresh the token:
+Thuộc tính expires_in chứa số giây cho đến khi mã thông báo truy cập hết hạn.
 
+Cũng giống như /oauth/authorize, /oauth/token là tuyến đường tự định nghĩa được sử dụng bởi Passport::routes method.
+
+
+#Refreshing Tokens => Làm mới thẻ truy cập.
+
+Nếu ứng dụng máy chủ của bạn cung cấp access_token có thời gian truy cập ngắn. Người dùng client đăng ký phải gửi thẻ refresh_token để 
+làm mới thẻ access_token mà chuẩn bị hết thời hạn sử dụng hoặc đã hết hạn. 
+
+Trong ví dụ này, chúng ta sẽ sử dụng thư viện Guzzle HTTP người dùng client cần để làm mới mã thông báo:
+```
 $http = new GuzzleHttp\Client;
 
 $response = $http->post('http://your-app.com/oauth/token', [
@@ -438,23 +537,59 @@ $response = $http->post('http://your-app.com/oauth/token', [
 ]);
 
 return json_decode((string) $response->getBody(), true);
-This /oauth/token route will return a JSON response containing access_token, refresh_token, and  expires_in attributes. The expires_in attribute contains the number of seconds until the access token expires.
+
+```
+
+Tuyến đường trên máy chủ của chúng ta sẽ phả ứng lại một chuỗi json có chứa access_token, refresh_token, and  expires_in attributes.
+
+/oauth/token access_token ,refresh_token,expires_in.
 
 
-Password Grant Tokens
 
-The OAuth2 password grant allows your other first-party clients, such as a mobile application, to obtain an access token using an e-mail address / username and password. This allows you to issue access tokens securely to your first-party clients without requiring your users to go through the entire OAuth2 authorization code redirect flow.
+#Password Grant Tokens
+
+Dùng mật khẩu để đổi token. Cơ chế này dùng cho ứng dụng ko yêu cầu thẻ ủy quyền. 
+
+Cơ chế này để nhận được thẻ token chỉ cần cung cấp địa chỉ email hoặc username và mật khẩu là bắt buộc để đổi lấy thẻ token.
+
+Điều này cho phép bạn phát hành mã bảo mật  access_token 1 cách an toàn. Cho các người dùng trực tiếp máy chủ của bạn.  
+
+mà không yêu cầu người dùng truy cập toàn bộ luồng chuyển hướng của ủy quyền OAuth2
 
 
-Creating A Password Grant Client
+#Creating A Password Grant Client
 
-Before your application can issue tokens via the password grant, you will need to create a password grant client. You may do this using the passport:client command with the --password option. If you have already run the passport:install command, you do not need to run this command:
+Tạo Người Dùng Cấp Phép Bằng Mật khẩu. 
 
-php artisan passport:client --password
+Trước khi ứng dụng của bạn tiến hành phát hành thẻ token thông qua password. Bạn cần đăng ký 1 password grant client. 1 tài khoản 
+client. 
+Client ở đây hiểu là mỗi là người dùng chỉ cần 1 lần đăng nhập sẽ có mã token. Nếu mã này là vĩnh viến có thể dùng nó mãi mãi. Nếu có time thì thỉnh thoảng phải làm mới.
 
-Requesting Tokens
+Nên hiểu nó là client sẽ tốt hơn. Bạn có thể đăng ký  làm điều này bằng cách sử dụng lệnh với tùy chọn với cờ --password.
 
-Once you have created a password grant client, you may request an access token by issuing a POST request to the /oauth/token route with the user's email address and password. Remember, this route is already registered by the Passport::routes method so there is no need to define it manually. If the request is successful, you will receive an access_token and refresh_token in the JSON response from the server:
+ passport:client --password tùy chọn.
+ 
+ Nếu bạn đã sử dụng  passport:install command, bạn không cần phải thực hiện lệnh này. 
+
+```
+  php artisan passport:client --password
+```
+
+Muốn lấy thẻ token thì phải làm sao ?
+
+#Requesting Tokens
+
+
+Sau khi bạn đã tạo ra client sử dụng password để đổi token bạn có thể yêu cầu access token bằng cách gửi 1 request POST tới
+
+ /oauth/token trong route này phải có chứa địa chỉ email và  password. và hãy ghi nhớ các tuyến đường này đã được tạo bởi Passport. 
+ 
+ Passport::routes() đã định nghĩa trước đó. 
+ 
+ Nếu request thành công bạn sẽ nhận được một và trong phản ứng JSON từ máy chủ sẽ chứa /oauth/tokenPassport::routesaccess_tokenrefresh_token
+
+Từ client bạn có một điều gì đó như vậy
+```
 
 $http = new GuzzleHttp\Client;
 
@@ -470,12 +605,23 @@ $response = $http->post('http://your-app.com/oauth/token', [
 ]);
 
 return json_decode((string) $response->getBody(), true);
-Remember, access tokens are long-lived by default. However, you are free to configure your maximum access token lifetime if needed.
 
-Requesting All Scopes
+``` 
 
-When using the password grant, you may wish to authorize the token for all of the scopes supported by your application. You can do this by requesting the * scope. If you request the * scope, the  can method on the token instance will always return true. This scope may only be assigned to a token that is issued using the password grant:
+Hãy nhớ rằng, các token truy cập được tồn tại lâu dài theo cấu hình máy chủ mặc định. Tuy nhiên, bạn được tự do định cấu hình thời gian truy cập tối đa của thẻ nếu cần.
 
+
+#Requesting All Scopes
+
+Yêu cầu tất cả các phạm vi 
+
+Bạn có thể ủy quyền cho token để truy cập tất cả các phạm vi tài nguyên được hỗ trợ bởi ứng dụng.
+
+Nếu có  'scope' => '`*`'  trong reuqets các can method sẽ luôn trả về bằng true.
+
+Scope này chỉ có thể được gán cho một mã thông báo được phát hành bằng cách sử dụng password.
+
+```
 $response = $http->post('http://your-app.com/oauth/token', [
     'form_params' => [
         'grant_type' => 'password',
@@ -487,10 +633,17 @@ $response = $http->post('http://your-app.com/oauth/token', [
     ],
 ]);
 
-Implicit Grant Tokens
+```
 
-The implicit grant is similar to the authorization code grant; however, the token is returned to the client without exchanging an authorization code. This grant is most commonly used for JavaScript or mobile applications where the client credentials can't be securely stored. To enable the grant, call the enableImplicitGrant method in your AuthServiceProvider:
+#Implicit Grant Tokens
 
+Thẻ truy cập được cấp ngầm định mà không cần được ủy quyền cho phép. 
+
+Cách này được sử dụng phổ biến nhất cho các ứng dụng JavaScript hoặc điện thoại di động mà không thể đảm bảo được an toàn.
+
+Để kích hoạt gọi *enableImplicitGrant* method trong  AuthServiceProvider của bạn:
+
+```<?php
 /**
  * Register any authentication / authorization services.
  *
@@ -504,6 +657,9 @@ public function boot()
 
     Passport::enableImplicitGrant();
 }
+
+```
+
 Once a grant has been enabled, developers may use their client ID to request an access token from your application. The consuming application should make a redirect request to your application's  /oauth/authorize route like so:
 
 Route::get('/redirect', function () {
