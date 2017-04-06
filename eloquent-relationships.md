@@ -2,9 +2,23 @@
 
 - [Giới thiệu](#introduction)
 - [Định nghĩa các quan hệ](#defining-relationships)
-    - [Một - Một](#one-to-one) `1 table chỉ chứa duy nhất 1 bản ghi với 1 column riêng mà chứa id bảng nó thuộc về.`
-    - [Một - Nhiều](#one-to-many) `1 table có thể chứa nhiều bản ghi với 1 column riêng mà chứa các id của bảng nó thuộc về`
-    - [Nhiều - Nhiều](#many-to-many) ` 2 bảng đều chứa 1 column mà chứa id của nhau và có thể chứa nhiều bản ghi truy xuất sang nhau`
+    - [Một - Một](#one-to-one) 
+    
+    `Ví dụ post và user. Bảng post sẽ chứa id của user như user_id. Mỗi bài viết chỉ thuộc về 1 người dùng.`  
+    
+    - [Một - Nhiều](#one-to-many) 
+    
+    `Ví dụ commemnt + post. Một bài viết có nhiều comment và bảng comment có 1 cột là post_id. Như vậy sẽ có nhiều comment / 1 post. `
+    - [Nhiều - Nhiều](#many-to-many) 
+    
+   ` Ví dụ như : post + tag => post_tag : một bài viết có nhiều thẻ tags. Một thẻ tags có nhiều bài viết.  Từ mỗi quan hệ này cần 3 bảng để làm việc khi truy vấn tới bảng đích ta sẽ thông qua bảng trung gian. 
+Ví dụ câu lệnh định nghĩa trong model 
+return $this->belongsToMany('App\Tag', 'post_tag', 'post_id', 'tag_id'); 
+
+=> Lấy nhiều bản ghi của Model App\Tag thông qua bảng trung gian post_tag, có trường post_id == với post id đang cần lấy tags, và tag_id là cột cần lấy tương ứng id của model App\Tag;
+
+	`
+    ` 
     - [Has Many Through](#has-many-through) `Lấy bản ghi của  1 bảng thông qua  một bảng trung gian. `
     - [Quan hệ đa hình](#polymorphic-relations) `1 bản ghi chỉ thuộc về 1 bản ghi là bản ghi id "trong 1 bảng hay nhiều bảng khác"`
     - [Quan hệ đa hình nhiều nhiều](#many-to-many-polymorphic-relations)`1 bản ghi có thể có nhiều hoặc thuộc về nhiều bản ghi trong các bảng khác nhau`
